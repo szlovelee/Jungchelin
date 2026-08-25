@@ -1,5 +1,6 @@
 from flask import Blueprint
 
-bp = Blueprint('routes', __name__)
+bp = Blueprint("routes", __name__)
 
-from . import db_test
+from . import auth_routes
+from . import page_route
