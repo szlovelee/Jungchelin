@@ -1,5 +1,5 @@
 from . import bp
-from app.services import user_service
+from app.services import user_service, resto_service
 from app.db import user_db
 
 @bp.route('/test/join', methods=["GET", "POST"])
@@ -30,4 +30,29 @@ def test_update_user() :
   }
 
   return user_service.update_user_info(user_id, new_info)
+
+
+@bp.route('/test/resto/add', methods=["GET", "POST"])
+def add_resto() :
+  resto = {
+    'name' : '북창동곱창',
+    'addr' : '경기 용인시 처인구 포곡읍 포곡로 86 1층',
+    'type' : '한식'
+  }
+
+  user_id = user_db.read_by_custom_id('guswl')["_id"]
+  return resto_service.add_resto(resto, user_id)
+
+@bp.route('/test/resto/list', methods=["GET"])
+def load_resto_list() :
+  lst = list(resto_service.load_resto_list())
+  data = []
+  for resto in lst:
+    detail = resto_service.get_resto_detail(resto['_id'])
+    info = {
+      'name' : detail['name'],
+      'user' : detail['user']
+    }
+    data.append(info)
+  return data
   
