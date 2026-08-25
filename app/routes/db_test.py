@@ -1,6 +1,6 @@
 from . import bp
-from app.services import user_service, resto_service
-from app.db import user_db
+from app.services import review_service, user_service, resto_service
+from app.db import user_db, resto_db, review_db
 
 @bp.route('/test/join', methods=["GET", "POST"])
 def test_join() :
@@ -55,4 +55,30 @@ def load_resto_list() :
     }
     data.append(info)
   return data
-  
+
+@bp.route('/test/resto/star', methods=["GET"])
+def avg_review():
+  resto_id = resto_db.read_resto_list()[0]["_id"]
+  return {
+   'star' : resto_service.get_resto_star(resto_id)
+  }
+
+
+@bp.route('/test/review/add', methods=["GET","POST"])
+def add_review():
+  resto_id = resto_db.read_resto_list()[0]["_id"]
+  user_id = user_db.read_by_custom_id('guswl')["_id"]
+  comment = '수제비를 직접 만들면 수제수제비'
+  return review_service.add_review(resto_id, user_id, comment, 5)
+
+@bp.route('/test/review/like', methods=["GET", "POST"])
+def toggle_like():
+  user_id = user_db.read_by_custom_id('guswl')["_id"]
+  writer = user_db.read_by_custom_id('dhdh')["_id"]
+  review_id = review_db.read_reviews_by_user(writer)[0]["_id"]
+  if review_service.user_liked(review_id, user_id) : 
+    review_db.update_like_cancel(review_id, user_id)
+  else :
+    review_db.update_like_add(review_id, user_id)
+
+  return str(review_db.read_review(review_id)["like"])
