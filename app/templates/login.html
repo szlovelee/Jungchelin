@@ -3,12 +3,9 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title> 정슐랭 </title>
+        <title> 정슐랭 로그인</title>
             <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     </head>
-        
-
-    
     <body>
         <div class="mt-5">
         </div>
@@ -29,11 +26,11 @@
         </div>
         <div class="w-25 mx-auto input-group mb-3">  <!-- # CSS로 아이디 입력창 줄이기? -->
         <span class="input-group-text" id="basic-addon1">아이디</span><!-- # CSS로 아이디와 비밀번호 라인 똑같이 변경 -->
-        <input type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
+        <input type="text" pattern="[A-Za-z0-9]+" minlength="6" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
         </div>
          <div class="w-25 mx-auto input-group mb-3">
         <span class="input-group-text" id="basic-addon1">비밀번호</span>
-        <input type="text" class="form-control" placeholder="password" aria-label="Username" aria-describedby="basic-addon1">
+        <input type="password" class="form-control" placeholder="password" aria-label="Username" aria-describedby="basic-addon1">
         </div>
         <div p class="fs-6 fw-medium text-center ">처음 오셨나요? 회원가입 탭을 눌러주세요</p>
         </div>
