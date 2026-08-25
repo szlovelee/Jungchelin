@@ -42,7 +42,13 @@ def join_service(user):
 def check_id_duplication(custom_id : str) :
   return user_db.read_by_custom_id(custom_id) is None
 
+def get_user_name(id : str):
+  user = user_db.read_user(id)
 
+  if user is None:
+    return None
+  
+  return user['name']
 
 def update_user_info(id: str, new_info):
   user =  user_db.read_user(id)

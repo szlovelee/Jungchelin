@@ -9,15 +9,6 @@ def create_user(user):
 
 def read_user(id : str):
   return collection.find_one({'_id':ObjectId(id)})
-  
-
-def read_user_name(id : str):
-  user = collection.find_one({'_id':ObjectId(id)})
-
-  if user is None:
-    return None
-  
-  return user['name']
 
 
 def read_by_custom_id(custom_id : str):
