@@ -1,0 +1,101 @@
+from flask import (
+    render_template,
+    request,
+    redirect,
+    make_response
+)
+
+from . import bp
+from app.services import user_service
+from app.utils.jwt_utils import create_token
+
+
+# 로그인
+@bp.route("/login", methods=["GET", "POST"])
+def login():
+    if request.method == "GET":
+        return render_template("login.html")
+
+    custom_id = request.form.get("custom_id", "").strip()
+    pw = request.form.get("pw", "")
+
+    if not custom_id or not pw:
+        return render_template(
+            "login.html",
+            error="아이디와 비밀번호를 입력해주세요."
+        )
+
+    result = user_service.login(custom_id, pw)
+
+    if not result["success"]:
+        return render_template(
+            "login.html",
+            error=result["msg"]
+        )
+
+    token = create_token(result["user_id"])
+
+    response = make_response(redirect("/home"))
+
+    response.set_cookie(
+        "access_token",
+        token,
+        httponly=True,
+        secure=False,
+        samesite="Lax",
+        max_age=60 * 60 * 2
+    )
+
+    return response
+
+
+# 회원가입
+@bp.route("/signup", methods=["GET", "POST"])
+def signup():
+    if request.method == "GET":
+        return render_template("signup.html")
+
+    user = {
+        "name": request.form.get("name", "").strip(),
+        "track": request.form.get("track", "").strip(),
+        "cohort": request.form.get("cohort", "").strip(),
+        "number": request.form.get("number", "").strip(),
+        "custom_id": request.form.get("custom_id", "").strip(),
+        "pw": request.form.get("pw", ""),
+        "pw_confirm": request.form.get("pw_confirm", "")
+    }
+
+    required_fields = [
+        user["name"],
+        user["track"],
+        user["cohort"],
+        user["number"],
+        user["custom_id"],
+        user["pw"],
+        user["pw_confirm"]
+    ]
+
+    if not all(required_fields):
+        return render_template(
+            "signup.html",
+            error="모든 항목을 입력해주세요."
+        )
+
+    result = user_service.join_service(user)
+
+    if not result["success"]:
+        return render_template(
+            "signup.html",
+            error=result["msg"]
+        )
+
+    return redirect("/login")
+
+
+# 로그아웃
+@bp.route("/logout", methods=["POST"])
+def logout():
+    response = make_response(redirect("/login"))
+    response.delete_cookie("access_token")
+
+    return response
