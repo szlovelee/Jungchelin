@@ -81,7 +81,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 submitButton.disabled = true;
             }
 
-            try {
+            try {       
                 const response = await fetch(
                     restaurantForm.action,
                     {
