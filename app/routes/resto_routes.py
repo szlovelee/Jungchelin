@@ -27,3 +27,12 @@ def add_resto():
         return redirect("/home?error=duplicate")
 
     return redirect("/home")
+
+
+@bp.route("/restaurants/detail", methods=["GET"])
+def get_selected_restaurant_detail():
+    restaurant_id = request.args.get("restaurant_id")
+
+    result = resto_service.get_resto_detail(restaurant_id)
+
+    return result
