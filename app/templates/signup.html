@@ -10,10 +10,15 @@
         href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
         rel="stylesheet"
     >
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}"
+    >
 </head>
 
 <body>
-    <div class="container-fluid py-5">
+    <div class="container-fluid min-vh-100 py-5">
 
         <div class="d-flex justify-content-end">
             <a href="/login" class="btn btn-outline-secondary btn-lg">
@@ -25,125 +30,116 @@
             정슐랭
         </h1>
 
-        <form method="POST" action="/signup" class="mx-auto signup-form">
-
-            <div class="input-group mb-4">
-                <span class="input-group-text border-0 bg-transparent fs-5">
-                    이름
-                </span>
+        <form
+            method="POST"
+            action="/signup"
+            class="row g-3 mx-auto col-12 col-md-8 col-lg-6"
+        >
+            <div class="col-12">
+                <label class="form-label">이름</label>
 
                 <input
                     type="text"
                     name="name"
+                    class="form-control form-control-lg border-dark"
                     pattern="[가-힣]+"
-                    class="form-control border-dark"
                     required
                 >
             </div>
 
-            <div class="row g-2 mb-4">
+            <div class="col-md-6">
+                <label class="form-label">소속</label>
 
-                <div class="col-md-5">
-                    <div class="input-group">
-                        <span class="input-group-text border-0 bg-transparent fs-5">
-                            소속
-                        </span>
+                <select
+                    name="track"
+                    class="form-select form-select-lg border-dark"
+                    required
+                >
+                    <option value="">소속 선택</option>
 
-                        <select
-                            name="track"
-                            class="form-select border-dark"
-                            required
-                        >
-                            <option value="">선택</option>
-                            <option value="코치">코치</option>
-                            <option value="SW-AI랩">SW-AI랩</option>
-                            <option value="게임랩">게임랩</option>
-                            <option value="게임테크랩">게임테크랩</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="col-md-3">
-                    <input
-                        type="number"
-                        name="cohort"
-                        class="form-control border-dark"
-                        placeholder="기수"
-                        required
-                    >
-                </div>
-
-                <div class="col-md-4">
-                    <input
-                        type="number"
-                        name="number"
-                        class="form-control border-dark"
-                        placeholder="번호"
-                        required
-                    >
-                </div>
-
+                    {% for track in track_types %}
+                        <option value="{{ track.name }}">
+                            {{ track.name }}
+                        </option>
+                    {% endfor %}
+                </select>
             </div>
 
-            <div class="input-group mb-4">
-                <span class="input-group-text border-0 bg-transparent fs-5">
-                    아이디
-                </span>
+            <div class="col-md-3">
+                <label class="form-label">기수</label>
+
+                <input
+                    type="number"
+                    name="cohort"
+                    class="form-control form-control-lg border-dark"
+                    required
+                >
+            </div>
+
+            <div class="col-md-3">
+                <label class="form-label">번호</label>
+
+                <input
+                    type="number"
+                    name="number"
+                    class="form-control form-control-lg border-dark"
+                    required
+                >
+            </div>
+
+            <div class="col-12">
+                <label class="form-label">아이디</label>
 
                 <input
                     type="text"
                     name="custom_id"
+                    class="form-control form-control-lg border-dark"
                     pattern="[A-Za-z0-9]+"
                     minlength="6"
-                    class="form-control border-dark"
                     required
                 >
             </div>
 
-            <div class="input-group mb-4">
-                <span class="input-group-text border-0 bg-transparent fs-5">
-                    비밀번호
-                </span>
+            <div class="col-12">
+                <label class="form-label">비밀번호</label>
 
                 <input
                     type="password"
                     name="pw"
-                    pattern="[A-Za-z0-9!@#$%^&*]+"
+                    class="form-control form-control-lg border-dark"
                     minlength="9"
-                    class="form-control border-dark"
                     required
                 >
             </div>
 
-            <div class="input-group mb-4">
-                <span class="input-group-text border-0 bg-transparent fs-5">
-                    비밀번호 확인
-                </span>
+            <div class="col-12">
+                <label class="form-label">비밀번호 확인</label>
 
                 <input
                     type="password"
                     name="pw_confirm"
+                    class="form-control form-control-lg border-dark"
                     minlength="9"
-                    class="form-control border-dark"
                     required
                 >
             </div>
 
             {% if error %}
-                <p class="text-danger text-center">
-                    {{ error }}
-                </p>
+                <div class="col-12">
+                    <p class="text-danger text-center">
+                        {{ error }}
+                    </p>
+                </div>
             {% endif %}
 
-            <div class="d-flex justify-content-center mt-5">
+            <div class="col-12 text-center mt-4">
                 <button
                     type="submit"
-                    class="btn btn-outline-secondary btn-lg px-5"
+                    class="btn btn-dark btn-lg px-5"
                 >
                     가입완료
                 </button>
             </div>
-
         </form>
     </div>
 </body>

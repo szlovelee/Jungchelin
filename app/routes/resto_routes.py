@@ -1,38 +1,29 @@
-from flask import request
+from flask import request, redirect
 
 from . import bp
-from app.services import resto_service, user_service
+from app.services import resto_service
+from app.utils import jwt_required
 from app.utils.jwt_utils import get_user_id_from_token
 
-@bp.route('resto/add', methods=["POST"])
+
+@bp.route("/restaurants", methods=["POST"])
+@jwt_required
 def add_resto():
-  user_id = get_user_id_from_token()
+    user_id = get_user_id_from_token()
 
-  resto = {
-    'name': request.form.get("name").strip(),
-    'addr': request.form.get("addr").strip()
-  }    
+    resto = {
+        "name": request.form.get("name", "").strip(),
+        "category": request.form.get("category", "").strip(),
+        "addr": request.form.get("addr", "").strip(),
+        "main_menu": request.form.get("main_menu", "").strip()
+    }
 
-  required_fields = [
-    resto["name"],
-    resto["addr"]
-  ]
+    if not resto["name"] or not resto["category"] or not resto["addr"]:
+        return redirect("/home?error=required")
 
-  if not all(required_fields):
-    return {
-      'success' : False,
-      'code' : "REQUIRED_FIELDS",
-      'msg' : "필수 항목을 채워주세요."
-    }, 400
-  
-  result = resto_service.add_resto(resto, user_id)
+    result = resto_service.add_resto(resto, user_id)
 
-  if not result['success']:
-    return result, 409
+    if not result["success"]:
+        return redirect("/home?error=duplicate")
 
-
-  return result, 201
-
-def get_resto_name(id):
-  return None
-
+    return redirect("/home")
