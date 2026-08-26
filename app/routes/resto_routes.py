@@ -1,9 +1,15 @@
-from flask import request, redirect
+from flask import request, redirect, jsonify
 
 from . import bp
 from app.services import resto_service
 from app.utils import jwt_required
 from app.utils.jwt_utils import get_user_id_from_token
+
+
+def is_ajax_request():
+    return request.headers.get(
+        "X-Requested-With"
+    ) == "XMLHttpRequest"
 
 
 @bp.route("/restaurants", methods=["POST"])
@@ -33,10 +39,19 @@ def add_resto():
         ).strip()
     }
 
-    if not resto["name"] or not resto["category"] or not resto["addr"]:
-        return redirect(
-            "/home?error=required"
-        )
+    if (
+        not resto["name"]
+        or not resto["category"]
+        or not resto["addr"]
+    ):
+        if is_ajax_request():
+            return jsonify({
+                "success": False,
+                "code": "REQUIRED",
+                "msg": "식당 이름, 분류, 주소를 입력해주세요."
+            }), 400
+
+        return redirect("/home?error=required")
 
     result = resto_service.add_resto(
         resto,
@@ -44,9 +59,20 @@ def add_resto():
     )
 
     if not result["success"]:
-        return redirect(
-            "/home?error=duplicate"
-        )
+        if is_ajax_request():
+            return jsonify({
+                "success": False,
+                "code": "DUPLICATE_RESTAURANT",
+                "msg": "이미 등록된 식당입니다."
+            }), 409
+
+        return redirect("/home?error=duplicate")
+
+    if is_ajax_request():
+        return jsonify({
+            "success": True,
+            "msg": "식당이 등록되었습니다."
+        }), 201
 
     return redirect("/home")
 

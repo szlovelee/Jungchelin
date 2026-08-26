@@ -45,12 +45,14 @@
             class="signup-form mx-auto"
         >
 
-            {% if error %}
+            {% if error and error_code != "ID_DUPLICATION" %}
                 <div class="alert alert-danger text-center">
                     {{ error }}
                 </div>
             {% endif %}
 
+
+            <!-- 이름 -->
             <div class="input-group mb-4">
                 <span class="input-group-text border-0 bg-transparent fs-5">
                     이름
@@ -62,10 +64,13 @@
                     class="form-control border-dark"
                     pattern="[가-힣]+"
                     placeholder="이름"
+                    value="{{ form_data.name if form_data else '' }}"
                     required
                 >
             </div>
 
+
+            <!-- 소속, 기수, 번호 -->
             <div class="row g-2 mb-4">
 
                 <div class="col-md-5">
@@ -83,9 +88,13 @@
                                 선택
                             </option>
 
-                            <!-- constants.py의 TRACK_TYPE 목록 사용 -->
                             {% for track in track_type %}
-                                <option value="{{ track }}">
+                                <option
+                                    value="{{ track }}"
+                                    {% if form_data and track == form_data.track %}
+                                        selected
+                                    {% endif %}
+                                >
                                     {{ track }}
                                 </option>
                             {% endfor %}
@@ -100,6 +109,7 @@
                         class="form-control border-dark"
                         placeholder="기수"
                         min="1"
+                        value="{{ form_data.cohort if form_data else '' }}"
                         required
                     >
                 </div>
@@ -111,28 +121,44 @@
                         class="form-control border-dark"
                         placeholder="번호"
                         min="1"
+                        value="{{ form_data.number if form_data else '' }}"
                         required
                     >
                 </div>
 
             </div>
 
-            <div class="input-group mb-4">
-                <span class="input-group-text border-0 bg-transparent fs-5">
-                    아이디
-                </span>
 
-                <input
-                    type="text"
-                    name="custom_id"
-                    class="form-control border-dark"
-                    pattern="[A-Za-z0-9]+"
-                    minlength="6"
-                    placeholder="영문과 숫자 6자 이상"
-                    required
-                >
+            <!-- 아이디 -->
+            <div class="mb-4">
+
+                <div class="input-group">
+                    <span class="input-group-text border-0 bg-transparent fs-5">
+                        아이디
+                    </span>
+
+                    <input
+                        type="text"
+                        name="custom_id"
+                        class="form-control border-dark"
+                        pattern="[A-Za-z0-9]+"
+                        minlength="6"
+                        placeholder="영문과 숫자 6자 이상"
+                        value="{{ form_data.custom_id if form_data else '' }}"
+                        required
+                    >
+                </div>
+
+                {% if error_code == "ID_DUPLICATION" %}
+                    <div class="text-danger small mt-1 text-center w-100">
+                        {{ error }}
+                    </div>
+                {% endif %}
+
             </div>
 
+
+            <!-- 비밀번호 -->
             <div class="input-group mb-4">
                 <span class="input-group-text border-0 bg-transparent fs-5">
                     비밀번호
@@ -149,6 +175,8 @@
                 >
             </div>
 
+
+            <!-- 비밀번호 확인 -->
             <div class="input-group mb-4">
                 <span class="input-group-text border-0 bg-transparent fs-5">
                     비밀번호 확인
@@ -163,6 +191,7 @@
                     required
                 >
             </div>
+
 
             <div class="d-flex justify-content-center mt-5">
                 <button
