@@ -1,15 +1,9 @@
 import bcrypt
 
 from app.db import user_db
-from app.db import track_db
-
 
 def check_id_duplication(custom_id: str):
     return user_db.read_by_custom_id(custom_id) is None
-
-
-def get_track_types():
-    return track_db.read_active_tracks()
 
 
 def get_user_name(user_id: str):

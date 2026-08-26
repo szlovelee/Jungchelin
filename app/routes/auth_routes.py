@@ -53,12 +53,12 @@ def login():
 
 @bp.route("/signup", methods=["GET", "POST"])
 def signup():
-    track_types = user_service.get_track_types()
+    track_type = constants.TRACK_TYPE
 
     if request.method == "GET":
         return render_template(
             "signup.html",
-            track_types=track_types
+            track_type=track_type
         )
 
     user = {
