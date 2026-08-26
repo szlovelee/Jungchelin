@@ -14,15 +14,15 @@ def index_page():
 
 
 @bp.route("/preview")
+@jwt_required
 def preview_home():
+    user_id = get_user_id_from_token()
     sort_key = request.args.get(
         "sort",
         "star"
     )
 
-    restaurants = resto_service.load_resto_list(
-        sort_key
-    )
+    restaurants = resto_service.load_resto_list(user_id, sort_key)
 
     return render_template(
         "home.html",
@@ -44,9 +44,7 @@ def home_page():
         "star"
     )
 
-    restaurants = resto_service.load_resto_list(
-        sort_key
-    )
+    restaurants = resto_service.load_resto_list(user_id, sort_key)
 
     restaurant_id = request.args.get(
         "restaurant_id"
