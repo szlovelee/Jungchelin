@@ -6,7 +6,7 @@ from flask import (
 )
 
 from . import bp
-from app.services import user_service
+from app.services import auth_service
 from app.utils.jwt_utils import create_token
 
 
@@ -25,7 +25,7 @@ def login():
             error="아이디와 비밀번호를 입력해주세요."
         )
 
-    result = user_service.login(custom_id, pw)
+    result = auth_service.login(custom_id, pw)
 
     if not result["success"]:
         return render_template(
@@ -81,7 +81,7 @@ def signup():
             error="모든 항목을 입력해주세요."
         )
 
-    result = user_service.join_service(user)
+    result = auth_service.join_service(user)
 
     if not result["success"]:
         return render_template(

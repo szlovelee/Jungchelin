@@ -1,4 +1,5 @@
-from app.db import resto_db, user_db, review_db
+from app.db import resto_db
+from app.services import user_service, review_service
 from app import constants
 
 def add_resto(resto, user_id : str) :
@@ -26,7 +27,7 @@ def load_resto_list() :
 
 def get_resto_detail(id : str) :
   detail = resto_db.read_resto(id)
-  user_name = user_db.read_user(detail['user'])['name']
+  user_name = user_service.read_user(detail['user'])['name']
   detail['user'] = user_name
   return detail
 
@@ -34,10 +35,3 @@ def get_resto_name(id : str) :
   resto = resto_db.read_resto(id)
   return resto['name']
 
-def get_resto_star(id : str):
-  avg_result = review_db.aggregate_avg_star(id)
-
-  if not avg_result:
-    return 0
-
-  return round(avg_result[0]['avg'], 1)

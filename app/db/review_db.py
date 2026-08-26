@@ -39,7 +39,7 @@ def update_like_cancel(id : str, user_id : str):
 def delete_review(id : str):
   return collection.delete_one({'_id':ObjectId(id)})
 
-def aggregate_avg_star(resto_id):
+def aggregate_avg_star(resto_id: str):
   pipeline = [
     {'$match': {'resto':ObjectId(resto_id)}},
     {'$group': {'_id' : None, 'avg' : {'$avg' : '$star'}}}
