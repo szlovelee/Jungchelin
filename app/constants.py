@@ -1,4 +1,5 @@
-TRACK_TYPE = ["SW-AI", "Game", "Game Tech", "코치님"]
+TRACK_TYPE = ["SW-AI", "Game", "Game Tech","코치"]
+
 
 RESTO_TYPE = ["한식", "중식", "양식", "일식", "패스트푸드", "카페", "기타"]
 

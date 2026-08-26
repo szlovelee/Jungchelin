@@ -16,13 +16,18 @@
     <div class="container-fluid py-4 px-4">
 
         <header class="d-flex justify-content-between align-items-center mb-5">
-            <a href="/home" class="text-decoration-none text-dark">
-                <h1 class="fw-bold">
+
+            <a
+                href="/home"
+                class="text-decoration-none text-dark"
+            >
+                <h1 class="fw-bold mb-0">
                     정슐랭
                 </h1>
             </a>
 
             <div class="d-flex gap-2">
+
                 <a
                     href="/home"
                     class="btn btn-outline-secondary"
@@ -30,7 +35,11 @@
                     홈으로
                 </a>
 
-                <form method="POST" action="/logout">
+                <form
+                    method="POST"
+                    action="/logout"
+                    class="m-0"
+                >
                     <button
                         type="submit"
                         class="btn btn-outline-secondary"
@@ -38,12 +47,40 @@
                         로그아웃
                     </button>
                 </form>
+
             </div>
         </header>
 
-        {% if request.args.get("error") %}
+        {% set error_code = request.args.get("error") %}
+
+        {% if error_code %}
             <div class="alert alert-danger">
-                요청을 처리하지 못했습니다.
+
+                {% if error_code == "PW_MISMATCH" %}
+                    비밀번호가 일치하지 않습니다.
+
+                {% elif error_code == "PW_TOO_SHORT" %}
+                    비밀번호는 9자 이상 입력해주세요.
+
+                {% elif error_code == "NO_UPDATES" %}
+                    수정할 정보가 없습니다.
+
+                {% elif error_code == "REVIEW_NOT_FOUND" %}
+                    리뷰를 찾을 수 없습니다.
+
+                {% elif error_code == "NOT_REVIEW_OWNER" %}
+                    본인이 작성한 리뷰만 수정하거나 삭제할 수 있습니다.
+
+                {% elif error_code == "review_required" %}
+                    리뷰 내용과 별점을 입력해주세요.
+
+                {% elif error_code == "review_star" %}
+                    별점은 1점부터 5점까지 선택해주세요.
+
+                {% else %}
+                    요청을 처리하지 못했습니다.
+                {% endif %}
+
             </div>
         {% endif %}
 
@@ -51,20 +88,25 @@
 
             <!-- 사용자 정보 -->
             <section class="col-lg-5">
+
                 <div class="card shadow-sm">
                     <div class="card-body">
+
                         <h2 class="card-title mb-4">
                             내 정보
                         </h2>
 
-                        <form method="POST" action="/mypage">
+                        <form
+                            method="POST"
+                            action="/mypage"
+                        >
 
                             <div class="mb-3">
                                 <label
                                     for="name"
                                     class="form-label"
                                 >
-                                    닉네임
+                                    이름
                                 </label>
 
                                 <input
@@ -93,18 +135,19 @@
                                 >
                                     {% for track in track_type %}
                                         <option
-                                            value="{{ track.name }}"
-                                            {% if track.name == user.track %}
+                                            value="{{ track }}"
+                                            {% if track == user.track %}
                                                 selected
                                             {% endif %}
                                         >
-                                            {{ track.name }}
+                                            {{ track }}
                                         </option>
                                     {% endfor %}
                                 </select>
                             </div>
 
                             <div class="row g-2 mb-3">
+
                                 <div class="col">
                                     <label
                                         for="cohort"
@@ -119,6 +162,7 @@
                                         name="cohort"
                                         class="form-control"
                                         value="{{ user.cohort }}"
+                                        min="1"
                                         required
                                     >
                                 </div>
@@ -137,9 +181,11 @@
                                         name="number"
                                         class="form-control"
                                         value="{{ user.number }}"
+                                        min="1"
                                         required
                                     >
                                 </div>
+
                             </div>
 
                             <hr>
@@ -158,6 +204,7 @@
                                     name="pw"
                                     class="form-control"
                                     minlength="9"
+                                    placeholder="변경할 때만 입력"
                                 >
                             </div>
 
@@ -175,6 +222,7 @@
                                     name="pw_confirm"
                                     class="form-control"
                                     minlength="9"
+                                    placeholder="변경할 때만 입력"
                                 >
                             </div>
 
@@ -184,21 +232,27 @@
                             >
                                 정보 수정
                             </button>
+
                         </form>
                     </div>
                 </div>
+
             </section>
 
-            <!-- 내 리뷰 -->
+            <!-- 작성한 리뷰 -->
             <section class="col-lg-7">
+
                 <div class="card shadow-sm">
                     <div class="card-body">
+
                         <h2 class="card-title mb-4">
                             내 리뷰 관리
                         </h2>
 
                         <div class="list-group">
+
                             {% for review in reviews %}
+
                                 <div class="list-group-item">
 
                                     <div class="d-flex justify-content-between">
@@ -216,11 +270,13 @@
                                     </p>
 
                                     <div class="d-flex justify-content-between align-items-center">
+
                                         <span class="text-secondary">
-                                            👍 {{ review.like or 0 }}
+                                            👍 {{ review.like }}
                                         </span>
 
                                         <div class="d-flex gap-2">
+
                                             <button
                                                 type="button"
                                                 class="btn btn-sm btn-outline-secondary"
@@ -233,6 +289,7 @@
                                             <form
                                                 method="POST"
                                                 action="/reviews/{{ review._id }}/delete"
+                                                class="m-0"
                                             >
                                                 <button
                                                     type="submit"
@@ -241,6 +298,7 @@
                                                     삭제
                                                 </button>
                                             </form>
+
                                         </div>
                                     </div>
 
@@ -253,6 +311,7 @@
                                             action="/reviews/{{ review._id }}/edit"
                                             class="row g-2"
                                         >
+
                                             <div class="col-md-7">
                                                 <input
                                                     type="text"
@@ -290,18 +349,24 @@
                                                     저장
                                                 </button>
                                             </div>
+
                                         </form>
                                     </div>
 
                                 </div>
+
                             {% else %}
+
                                 <div class="text-secondary">
                                     작성한 리뷰가 없습니다.
                                 </div>
+
                             {% endfor %}
+
                         </div>
                     </div>
                 </div>
+
             </section>
 
         </main>

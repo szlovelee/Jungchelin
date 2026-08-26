@@ -1,6 +1,7 @@
 from flask import render_template, request, redirect
 
 from . import bp
+from app import constants
 from app.services import user_service
 from app.services import review_service
 from app.services import resto_service
@@ -62,7 +63,6 @@ def mypage():
 
         return redirect("/mypage")
 
-
     user = user_service.get_user(
         user_id
     )
@@ -70,7 +70,7 @@ def mypage():
     if user is None:
         return redirect("/login")
 
-    track_type = user_service.get_track_types()
+    track_type = constants.TRACK_TYPE
 
     reviews = review_service.get_reviews_by_user(
         user_id
