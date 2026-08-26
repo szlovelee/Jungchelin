@@ -1,101 +1,102 @@
-// app/static/js/main.js
-
 document.addEventListener("DOMContentLoaded", function () {
-    const restaurantModal = document.getElementById("restaurant-modal");
-    const restaurantForm = document.querySelector(".restaurant-form");
-    const reviewForm = document.querySelector(".review-form");
+    const restaurantForm = document.querySelector(
+        '#restaurantModal form[action="/restaurants"]'
+    );
 
-    // 식당 추가 모달 열기
-    window.openRestaurantModal = function () {
-        if (!restaurantModal) {
-            return;
-        }
+    const reviewForm = document.querySelector(
+        'form[action="/reviews"]'
+    );
 
-        restaurantModal.classList.add("active");
-        document.body.style.overflow = "hidden";
-    };
+    const pinButtons = document.querySelectorAll(
+        ".pin-button"
+    );
 
-    // 식당 추가 모달 닫기
-    window.closeRestaurantModal = function () {
-        if (!restaurantModal) {
-            return;
-        }
 
-        restaurantModal.classList.remove("active");
-        document.body.style.overflow = "auto";
-    };
+    // 고정핀 클릭
+    pinButtons.forEach(function (pinButton) {
+        pinButton.addEventListener("click", function (event) {
+            event.preventDefault();
+            event.stopPropagation();
 
-    // 모달 바깥쪽 클릭하면 닫기
-    if (restaurantModal) {
-        restaurantModal.addEventListener("click", function (event) {
-            if (event.target === restaurantModal) {
-                closeRestaurantModal();
-            }
+            const isPinned =
+                pinButton.classList.toggle("active");
+
+            pinButton.setAttribute(
+                "aria-pressed",
+                String(isPinned)
+            );
         });
-    }
-
-    // ESC 키 누르면 모달 닫기
-    document.addEventListener("keydown", function (event) {
-        if (event.key === "Escape") {
-            closeRestaurantModal();
-        }
     });
 
-    // 식당 추가 form 간단 검증
+
+    // 식당 등록 검증
     if (restaurantForm) {
         restaurantForm.addEventListener("submit", function (event) {
-            const nameInput = restaurantForm.querySelector('input[name="name"]');
-            const categorySelect = restaurantForm.querySelector('select[name="category"]');
-            const addressInput = restaurantForm.querySelector('input[name="address"]');
+            const nameInput = restaurantForm.querySelector(
+                'input[name="name"]'
+            );
 
-            const name = nameInput.value.trim();
-            const category = categorySelect.value.trim();
-            const address = addressInput.value.trim();
+            const categorySelect = restaurantForm.querySelector(
+                'select[name="category"]'
+            );
 
-            if (!name) {
+            const addressInput = restaurantForm.querySelector(
+                'input[name="addr"]'
+            );
+
+            if (!nameInput || !categorySelect || !addressInput) {
+                return;
+            }
+
+            if (!nameInput.value.trim()) {
                 event.preventDefault();
                 alert("식당 이름을 입력해주세요.");
                 nameInput.focus();
                 return;
             }
 
-            if (!category) {
+            if (!categorySelect.value.trim()) {
                 event.preventDefault();
                 alert("식당 분류를 선택해주세요.");
                 categorySelect.focus();
                 return;
             }
 
-            if (!address) {
+            if (!addressInput.value.trim()) {
                 event.preventDefault();
                 alert("식당 주소를 입력해주세요.");
                 addressInput.focus();
-                return;
             }
         });
     }
 
-    // 리뷰 등록 form 간단 검증
+
+    // 리뷰 등록 검증
     if (reviewForm) {
         reviewForm.addEventListener("submit", function (event) {
-            const commentInput = reviewForm.querySelector('input[name="comment"]');
-            const ratingSelect = reviewForm.querySelector('select[name="rating"]');
+            const commentInput = reviewForm.querySelector(
+                'input[name="comment"]'
+            );
 
-            const comment = commentInput.value.trim();
-            const rating = ratingSelect.value;
+            const starSelect = reviewForm.querySelector(
+                'select[name="star"]'
+            );
 
-            if (!comment) {
+            if (!commentInput || !starSelect) {
+                return;
+            }
+
+            if (!commentInput.value.trim()) {
                 event.preventDefault();
                 alert("한줄평을 입력해주세요.");
                 commentInput.focus();
                 return;
             }
 
-            if (!rating) {
+            if (!starSelect.value) {
                 event.preventDefault();
                 alert("별점을 선택해주세요.");
-                ratingSelect.focus();
-                return;
+                starSelect.focus();
             }
         });
     }

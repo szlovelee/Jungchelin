@@ -1,5 +1,8 @@
 from flask import request, redirect
 
+from bson import ObjectId
+from bson.errors import InvalidId
+
 from . import bp
 from app.services import review_service
 from app.utils import jwt_required
@@ -29,19 +32,22 @@ def add_review():
 
     if not resto_id or not comment or not star_text:
         return redirect(
-            f"/home?restaurant_id={resto_id}&error=review_required"
+            f"/home?restaurant_id={resto_id}"
+            "&error=review_required"
         )
 
     try:
         star = int(star_text)
     except ValueError:
         return redirect(
-            f"/home?restaurant_id={resto_id}&error=review_star"
+            f"/home?restaurant_id={resto_id}"
+            "&error=review_star"
         )
 
     if star < 1 or star > 5:
         return redirect(
-            f"/home?restaurant_id={resto_id}&error=review_star"
+            f"/home?restaurant_id={resto_id}"
+            "&error=review_star"
         )
 
     result = review_service.add_review(
@@ -74,7 +80,7 @@ def toggle_like(review_id):
 
     if not result["success"]:
         return redirect(
-            "/home?error=review_not_found"
+            "/home?error=REVIEW_NOT_FOUND"
         )
 
     return redirect(
@@ -147,7 +153,39 @@ def delete_review(review_id):
     return redirect("/mypage")
 
 
-@bp.route('/review/exists', methods=["GET"])
+@bp.route("/review/exists", methods=["GET"])
+@jwt_required
 def user_already_reviewed():
-  user_id = get_user_id_from_token()
-  return review_service.user_reviewed(user_id)
+    user_id = get_user_id_from_token()
+
+    resto_id = (
+        request.args.get("resto_id")
+        or request.args.get("restaurant_id")
+        or ""
+    ).strip()
+
+    if not resto_id:
+        return {
+            "success": False,
+            "exists": False,
+            "msg": "식당 ID가 필요합니다."
+        }, 400
+
+    try:
+        ObjectId(resto_id)
+    except (InvalidId, TypeError):
+        return {
+            "success": False,
+            "exists": False,
+            "msg": "잘못된 식당 ID입니다."
+        }, 400
+
+    exists = review_service.user_reviewed(
+        resto_id,
+        user_id
+    )
+
+    return {
+        "success": True,
+        "exists": exists
+    }
