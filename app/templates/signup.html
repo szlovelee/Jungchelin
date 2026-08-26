@@ -14,7 +14,7 @@
     <style>
         .signup-form {
             width: 100%;
-            max-width: 520px;
+            max-width: 480px;
         }
 
         .brand-title {
@@ -24,13 +24,12 @@
 </head>
 
 <body>
-    <div class="container py-4">
+    <div class="container py-5">
 
         <div class="d-flex justify-content-end">
             <a
                 href="/login"
-                class="btn btn-outline-secondary btn-lg"
-            >
+                class="btn btn-outline-secondary">
                 로그인
             </a>
         </div>
@@ -46,7 +45,7 @@
         >
 
             {% if error and error_code != "ID_DUPLICATION" %}
-                <div class="alert alert-danger text-center">
+                <div class="alert alert-danger text-center" role="alert">
                     {{ error }}
                 </div>
             {% endif %}
@@ -150,7 +149,7 @@
                 </div>
 
                 {% if error_code == "ID_DUPLICATION" %}
-                    <div class="text-danger small mt-1 text-center w-100">
+                    <div class="text-danger small mt-1 text-center w-100" role="alert">
                         {{ error }}
                     </div>
                 {% endif %}

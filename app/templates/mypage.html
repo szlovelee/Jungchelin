@@ -54,7 +54,7 @@
         {% set error_code = request.args.get("error") %}
 
         {% if error_code %}
-            <div class="alert alert-danger">
+            <div class="alert alert-danger" role="alert">
 
                 {% if error_code == "PW_MISMATCH" %}
                     비밀번호가 일치하지 않습니다.
@@ -280,7 +280,7 @@
 
                                             <button
                                                 type="button"
-                                                class="btn btn-sm btn-outline-secondary"
+                                                class="btn btn-outline-secondary"
                                                 data-bs-toggle="collapse"
                                                 data-bs-target="#editReview{{ review._id }}"
                                             >
