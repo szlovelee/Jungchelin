@@ -88,7 +88,7 @@
 
 <div class="container-fluid px-4 py-3">
 
-    <!-- 상단 헤더 -->
+    <!-- 헤더 -->
     <header class="d-flex justify-content-between align-items-center mb-4">
 
         <a
@@ -135,18 +135,14 @@
     </header>
 
 
-    <!-- 오류 메시지 -->
-    {% if request.args.get("error") %}
+    <!-- 기타 오류 메시지 -->
+    {% set error = request.args.get("error") %}
 
-        {% set error = request.args.get("error") %}
-
+    {% if error and error != "duplicate" %}
         <div class="alert alert-danger">
 
             {% if error == "required" %}
                 필수 항목을 모두 입력해주세요.
-
-            {% elif error == "duplicate" %}
-                이미 등록된 식당입니다.
 
             {% elif error == "review_required" %}
                 리뷰 내용과 별점을 입력해주세요.
@@ -165,7 +161,6 @@
             {% endif %}
 
         </div>
-
     {% endif %}
 
 
@@ -276,8 +271,6 @@
                                     </p>
                                 {% endif %}
 
-
-                                <!-- 리뷰 수와 별점 -->
                                 <div class="d-flex justify-content-between align-items-end mt-3">
 
                                     <small class="text-secondary">
@@ -318,7 +311,6 @@
 
                     {% if selected_restaurant %}
 
-                        <!-- 식당 기본 정보 -->
                         <div class="mb-4">
 
                             <div class="d-flex justify-content-between align-items-start">
@@ -329,10 +321,9 @@
                                         {{ selected_restaurant.name }}
                                     </h2>
 
-                                    <!-- 식당 이름 아래 종류 표시 -->
-                                    
+                                    <span class="badge text-bg-light border">
                                         {{ selected_restaurant.category }}
-                                    
+                                    </span>
 
                                 </div>
 
@@ -493,7 +484,6 @@
 
                                         </div>
 
-
                                         <form
                                             method="POST"
                                             action="/reviews/{{ review._id }}/like"
@@ -580,6 +570,7 @@
             </div>
 
             <form
+                id="restaurantForm"
                 method="POST"
                 action="/restaurants"
             >
@@ -688,6 +679,14 @@
 
                 <div class="modal-footer">
 
+                    <!-- 이메일 신고 링크 -->
+                    <a
+                        href="mailto:dhrho1208@gmail.com?subject=%EC%8B%9D%EB%8B%B9%20%EC%A0%95%EB%B3%B4%20%EB%B6%88%EC%9D%BC%EC%B9%98%20%EC%8B%A0%EA%B3%A0"
+                        class="me-auto text-dark"
+                    >
+                        식당 불일치 신고하기
+                    </a>
+
                     <button
                         type="button"
                         class="btn btn-outline-secondary"
@@ -708,7 +707,6 @@
             </form>
 
         </div>
-
     </div>
 </div>
 

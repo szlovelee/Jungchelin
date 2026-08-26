@@ -29,9 +29,11 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
 
-    // 식당 등록 검증
+    // 식당 등록
     if (restaurantForm) {
-        restaurantForm.addEventListener("submit", function (event) {
+        restaurantForm.addEventListener("submit", async function (event) {
+            event.preventDefault();
+
             const nameInput = restaurantForm.querySelector(
                 'input[name="name"]'
             );
@@ -44,28 +46,89 @@ document.addEventListener("DOMContentLoaded", function () {
                 'input[name="addr"]'
             );
 
+            const submitButton = restaurantForm.querySelector(
+                'button[type="submit"]'
+            );
+
             if (!nameInput || !categorySelect || !addressInput) {
                 return;
             }
 
             if (!nameInput.value.trim()) {
-                event.preventDefault();
                 alert("식당 이름을 입력해주세요.");
                 nameInput.focus();
                 return;
             }
 
             if (!categorySelect.value.trim()) {
-                event.preventDefault();
                 alert("식당 분류를 선택해주세요.");
                 categorySelect.focus();
                 return;
             }
 
             if (!addressInput.value.trim()) {
-                event.preventDefault();
                 alert("식당 주소를 입력해주세요.");
                 addressInput.focus();
+                return;
+            }
+
+            if (submitButton) {
+                submitButton.disabled = true;
+            }
+
+            try {
+                const response = await fetch(
+                    restaurantForm.action,
+                    {
+                        method: "POST",
+                        body: new FormData(restaurantForm),
+                        headers: {
+                            "X-Requested-With": "XMLHttpRequest"
+                        }
+                    }
+                );
+
+                const result = await response.json();
+
+                if (!response.ok || !result.success) {
+                    if (
+                        result.code ===
+                        "DUPLICATE_RESTAURANT"
+                    ) {
+                        alert("이미 등록된 식당입니다.");
+                    } else {
+                        alert(
+                            result.msg ||
+                            "식당 등록에 실패했습니다."
+                        );
+                    }
+
+                    // 모달과 입력값을 그대로 유지
+                    return;
+                }
+
+                const modalElement =
+                    document.getElementById(
+                        "restaurantModal"
+                    );
+
+                const modal =
+                    bootstrap.Modal.getOrCreateInstance(
+                        modalElement
+                    );
+
+                modal.hide();
+
+                window.location.href = "/home";
+
+            } catch (error) {
+                alert(
+                    "서버와 통신하는 중 문제가 발생했습니다."
+                );
+            } finally {
+                if (submitButton) {
+                    submitButton.disabled = false;
+                }
             }
         });
     }

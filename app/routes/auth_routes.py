@@ -116,14 +116,18 @@ def signup():
         return render_template(
             "signup.html",
             track_type=track_type,
-            error="모든 항목을 입력해주세요."
+            form_data=user,
+            error="모든 항목을 입력해주세요.",
+            error_code="REQUIRED"
         )
 
     if user["track"] not in track_type:
         return render_template(
             "signup.html",
             track_type=track_type,
-            error="올바른 소속을 선택해주세요."
+            form_data=user,
+            error="올바른 소속을 선택해주세요.",
+            error_code="INVALID_TRACK"
         )
 
     result = auth_service.join_service(
@@ -134,7 +138,9 @@ def signup():
         return render_template(
             "signup.html",
             track_type=track_type,
-            error=result["msg"]
+            form_data=user,
+            error=result["msg"],
+            error_code=result["code"]
         )
 
     return redirect("/login")
