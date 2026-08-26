@@ -9,11 +9,16 @@
     >
 
     <title>정슐랭</title>
+<<<<<<< Updated upstream
 
     <link
         href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
         rel="stylesheet"
     >
+=======
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+>>>>>>> Stashed changes
 
     <style>
         body {
@@ -46,29 +51,17 @@
 
         .pin-button {
             position: absolute;
+            background: transparent;
             top: 12px;
             right: 12px;
             z-index: 2;
             width: 38px;
             height: 38px;
-            border: 1px solid #adb5bd;
+            border: 1px;
             border-radius: 6px;
-            background-color: #ffffff;
-            color: #6c757d;
             font-size: 20px;
             line-height: 1;
         }
-
-        .pin-button:hover {
-            background-color: #e9ecef;
-        }
-
-        .pin-button.active {
-            background-color: #495057;
-            border-color: #495057;
-            color: #ffffff;
-        }
-
         .detail-area {
             min-height: calc(100vh - 140px);
         }
@@ -238,6 +231,7 @@
                         ">
 
                             <!-- 고정핀 -->
+<<<<<<< Updated upstream
                             <form
                                 method="POST"
                                 action="/restaurants/{{ restaurant._id }}/pin"
@@ -256,7 +250,23 @@
                                     aria-pressed="{% if restaurant._id in pinned %}true{% else %}false{% endif %}"
                                 >
                                     📌
+=======
+                            <form method="POST" action="/restaurants/{{restaurant._id}}/pin">
+                                <button type="submit"
+                                    class="pin-button {% if restaurant._id in pinned %}active{% endif %}"
+                                    data-restaurant-id="{{ restaurant._id }}" aria-label="식당 고정"
+                                    aria-pressed="{% if restaurant._id in pinned %}true{% else %}false{% endif %}">
+                                    {% if restaurant._id in pinned %}
+                                    <img src="{{ url_for('static', filename='img/pin.png') }}" width="20" alt="고정됨">
+                                    {% else %}
+                                    <img src="{{ url_for('static', filename='img/no-pin.png') }}" width="20"
+                                        alt="고정 안 됨">
+                                    {% endif %}
+>>>>>>> Stashed changes
                                 </button>
+                            </form>
+
+                            </button>
                             </form>
 
                             <div class="card-body">
@@ -443,10 +453,14 @@
                                         </div>
 
                                         <div class="col-md-2">
+<<<<<<< Updated upstream
                                             <button
                                                 type="submit"
                                                 class="btn btn-dark w-100"
                                             >
+=======
+                                            <button type="submit" class="ms-3 review-btn review-btn:hover">
+>>>>>>> Stashed changes
                                                 등록
                                             </button>
                                         </div>
@@ -730,6 +744,7 @@
                             식당 불일치 신고하기
                         </a>
 
+<<<<<<< Updated upstream
                         <button
                             type="button"
                             class="btn btn-outline-secondary"
@@ -744,6 +759,16 @@
                         >
                             등록
                         </button>
+=======
+                        <button type="submit" class="register-btn register-btn:hover">
+                            등록
+                        </button>
+
+                        <button type="submit" class="cancel-btn cancel-btn:hover">
+                            취소
+                        </button>
+
+>>>>>>> Stashed changes
 
                     </div>
 
