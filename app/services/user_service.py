@@ -1,35 +1,39 @@
 import bcrypt
 
+from bson.objectid import ObjectId
 from app.db import user_db
 
 
-def check_id_duplication(custom_id):
-    return user_db.read_by_custom_id(
-        custom_id
-    ) is None
+def check_id_duplication(custom_id:str):
+    return user_db.read_by_custom_id(custom_id) is None
 
 
-def get_user(user_id):
-    return user_db.read_user(
-        user_id
-    )
+def get_user(id:str):
+    return user_db.read_user(id)
 
 
-def get_user_name(user_id):
-    user = user_db.read_user(
-        user_id
-    )
+def get_user_name(id:str):
+    user = user_db.read_user(id)
 
     if user is None:
         return None
 
-    return user.get("name")
+    return user["name"]
 
+def get_user_fav_resto(id):
+    user = user_db.read_user(id)
 
-def update_user_info(user_id, new_info):
-    user = user_db.read_user(
-        user_id
-    )
+    if user is None:
+        return None
+
+    if "fav_resto" not in user :
+      return []
+
+    return user["fav_resto"]
+    
+
+def update_user_info(id, new_info):
+    user = user_db.read_user(id)
 
     if user is None:
         return {
@@ -50,15 +54,9 @@ def update_user_info(user_id, new_info):
             update_data[key] = new_info[key]
 
     if "pw" in new_info or "pw_confirm" in new_info:
-        pw = new_info.get(
-            "pw",
-            ""
-        )
+        pw = new_info.get("pw","")
 
-        pw_confirm = new_info.get(
-            "pw_confirm",
-            ""
-        )
+        pw_confirm = new_info.get("pw_confirm","")
 
         if not pw or pw != pw_confirm:
             return {
@@ -79,10 +77,7 @@ def update_user_info(user_id, new_info):
             "msg": "수정할 정보가 없습니다."
         }
 
-    result = user_db.update_user(
-        user_id,
-        update_data
-    )
+    result = user_db.update_user(id, update_data)
 
     if result is None or result.matched_count == 0:
         return {
@@ -94,3 +89,15 @@ def update_user_info(user_id, new_info):
     return {
         "success": True
     }
+
+def toggle_fav_resto(id:str, resto_id:str):
+
+    pin = False
+    
+    if ObjectId(resto_id) in get_user_fav_resto(id):
+        user_db.remove_favorite_resto(id, resto_id)
+    else:
+        user_db.add_favorite_resto(id, resto_id)
+        pin = True
+
+    return pin

@@ -17,9 +17,12 @@ document.addEventListener("DOMContentLoaded", function () {
         pinButton.addEventListener("click", function (event) {
             event.preventDefault();
             event.stopPropagation();
+            
+            const response = await fetch(`/restaurants/${restaurantId}/pin`, {
+                method: "POST"
+            });
 
-            const isPinned =
-                pinButton.classList.toggle("active");
+            const isPinned = await response.json()
 
             pinButton.setAttribute(
                 "aria-pressed",

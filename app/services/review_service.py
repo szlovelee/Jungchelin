@@ -108,6 +108,7 @@ def toggle_like(review_id, user_id):
         []
     )
 
+    status = False
     if user_object_id in liked_users:
         review_db.update_like_cancel(
             review_id,
@@ -118,10 +119,13 @@ def toggle_like(review_id, user_id):
             review_id,
             user_id
         )
+        status = True
+
 
     return {
         "success": True,
-        "resto_id": str(review["resto"])
+        "resto_id": str(review["resto"]),
+        "status":status
     }
 
 

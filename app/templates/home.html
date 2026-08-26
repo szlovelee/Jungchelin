@@ -234,21 +234,25 @@
                         >
 
                             <!-- 고정핀 -->
-                            <button
-                                type="button"
-                                class="
-                                    pin-button
-                                    {% if restaurant.is_pinned %}
-                                        active
-                                    {% endif %}
-                                "
-                                data-restaurant-id="{{ restaurant._id }}"
-                                aria-label="식당 고정"
-                                aria-pressed="{% if restaurant.is_pinned %}true{% else %}false{% endif %}"
+                            <form
+                                method="POST"
+                                action="/restaurants/{{restaurant._id}}/pin"
                             >
-                                📌
-                            </button>
-
+                                <button
+                                    type="submit"
+                                    class="
+                                        pin-button
+                                        {% if restaurant._id in pinned %}
+                                            active
+                                        {% endif %}
+                                    "
+                                    data-restaurant-id="{{ restaurant._id }}"
+                                    aria-label="식당 고정"
+                                    aria-pressed="{% if restaurant._id in pinned %}true{% else %}false{% endif %}"
+                                >
+                                    📌
+                                </button>
+                            </form>
 
                             <div class="card-body">
 
