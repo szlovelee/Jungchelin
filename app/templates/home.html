@@ -420,7 +420,7 @@
                                         </span>
                                         <form  method="POST" action="/reviews/{{ review._id }}/like">
                                             <button type="submit" class="btn btn-sm">
-                                                {% if review.status %}
+                                                {% if review.like_status %}
                                                 <img src="{{ url_for('static', filename='img/thumb.png') }}" alt="좋아요"
                                                     width="30">
                                                 {% else %}
