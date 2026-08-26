@@ -13,3 +13,18 @@
 .login-btn:hover {
     background: linear-gradient(to bottom, #33dcd6, #03cccc);
 }
+.login-btn2 {
+    height: 46px;
+    width: 100%;
+    border: none;
+    border-radius: 8px;
+    background: linear-gradient(to bottom, #33dcaf);
+    color: #fff;
+    font-size: 22px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.login-btn:hover2 {
+    background: linear-gradient(to bottom, #33dcd6);
+}
