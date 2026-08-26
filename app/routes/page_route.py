@@ -71,6 +71,7 @@ def home_page():
                         str(review["user"])
                     )
                 )
+                review["like_status"] = user_id in review['liked']
 
     return render_template(
         "home.html",

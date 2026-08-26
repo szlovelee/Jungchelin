@@ -85,7 +85,6 @@ def toggle_like(review_id):
 
     return redirect(
         f"/home?restaurant_id={result['resto_id']}"
-        f"&?status={result['status']}"
     )
 
 

@@ -41,11 +41,9 @@ def add_review(resto_id, user_id, comment, star):
 
 
 def get_review_list(resto_id):
-    return list(
-        review_db.read_reviews_by_resto(
-            resto_id
-        )
-    )
+    return list(review_db.read_reviews_by_resto(resto_id))
+      
+
 
 
 def get_reviews_by_user(user_id):
