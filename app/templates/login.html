@@ -18,10 +18,10 @@
 </head>
 
 <body>
-    <div class="container-fluid min-vh-100 py-5">
+    <div class="container py-5">
 
         <div class="d-flex justify-content-end">
-            <a href="/signup" class="btn btn-outline-secondary btn-lg">
+            <a href="/signup" class="btn btn-outline-secondary">
                 회원가입
             </a>
         </div>
@@ -58,10 +58,11 @@
                     </div>
 
                     {% if error %}
-                        <p class="text-danger text-center">
+                        <div class="alert alert-danger text-center" role="alert">
                             {{ error }}
-                        </p>
+                        </div>
                     {% endif %}
+                    
 
                     <button type="submit" class="btn btn-dark btn-lg w-100">
                         로그인
