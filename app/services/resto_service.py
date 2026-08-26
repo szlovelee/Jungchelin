@@ -1,3 +1,4 @@
+from app import constants
 from app.db import resto_db
 from app.services import review_service
 from app.services import user_service
@@ -29,10 +30,12 @@ def check_address_duplication(addr):
     ) is None
 
 
-def load_resto_list(sort_key="star"):
+def load_resto_list(user_id, sort_key="star"):
     restaurants = list(
         resto_db.read_resto_list()
     )
+
+    pinned = user_service.get_user_fav_resto(user_id)
 
     for restaurant in restaurants:
         resto_id = str(
@@ -51,21 +54,25 @@ def load_resto_list(sort_key="star"):
             )
         )
 
-    if sort_key == "review":
-        restaurants.sort(
-            key=lambda restaurant: restaurant["review_count"],
-            reverse=True
-        )
+    sort_option = constants.RESTO_SORT.get(sort_key,
+                                            constants.RESTO_SORT[constants.RESOT_SORT_DEFAULT])
 
-    elif sort_key == "name":
-        restaurants.sort(
-            key=lambda restaurant: restaurant.get("name", "")
-        )
+    field = sort_option["field"]
+    order = sort_option["order"]
 
+    if order == -1:
+        restaurants.sort( 
+            key=lambda restaurant: (
+                restaurant["_id"] not in pinned,
+                -restaurant.get(field,0)
+            )
+        )
     else:
         restaurants.sort(
-            key=lambda restaurant: restaurant["average_rating"],
-            reverse=True
+            key=lambda restaurant: (
+                restaurant["_id"] not in pinned,
+                restaurant.get(field,"")
+            )
         )
 
     return restaurants

@@ -5,14 +5,17 @@ RESTO_TYPE = ["한식", "중식", "양식", "일식", "패스트푸드", "카페
 
 RESTO_SORT = {
   'star' : { 
+    'field' : "average_rating",
     'order' : -1,
     'label' : "별점 순"
     },
   'review' : {
+    'field' : "review_count",
     'order' : -1,
     'label' : "리뷰 순"
     },
   'name' : {
+    'field' : "name",
     'order' : 1,
     'label' : "가나다 순"
   }
