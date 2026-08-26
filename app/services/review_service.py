@@ -1,50 +1,195 @@
-from app.db import review_db
-from app.services import resto_service
 from bson.objectid import ObjectId
+from bson.errors import InvalidId
 
-def add_review(resto_id:str, user_id:str, comment:str, star:int):
-  if user_reviewed(resto_id, user_id) :
-    return {
-      'success' : False,
-      'code' : "REVIEW_DUPLICATION",
-      'msg' : "이미 등록한 리뷰가 존재합니다."
+from app.db import review_db
+
+
+def add_review(resto_id, user_id, comment, star):
+    try:
+        resto_object_id = ObjectId(resto_id)
+        user_object_id = ObjectId(user_id)
+    except (InvalidId, TypeError):
+        return {
+            "success": False,
+            "code": "INVALID_ID",
+            "msg": "잘못된 식당 또는 사용자 정보입니다."
+        }
+
+    if user_reviewed(resto_id, user_id):
+        return {
+            "success": False,
+            "code": "REVIEW_DUPLICATION",
+            "msg": "이미 작성한 리뷰가 있습니다."
+        }
+
+    review = {
+        "resto": resto_object_id,
+        "user": user_object_id,
+        "comment": comment,
+        "star": star,
+        "like": 0,
+        "liked": []
     }
-  
-  review = {
-    'resto' : ObjectId(resto_id),
-    'user' : ObjectId(user_id),
-    'comment' : comment,
-    'star' : star
-  }
 
-  review_db.create_review(review)
-  resto_service.add_star_info(resto_id, star)
+    review_db.create_review(
+        review
+    )
 
-  return {
-    'success' : True
-  }
-    
+    return {
+        "success": True
+    }
 
-def get_review_list(resto_id : str):
-  return review_db.read_reviews_by_resto(resto_id)
 
-def edit_review(id: str, comment:str, star:int):
-  review = review_db.read_review(id)
-  resto_id = review['resto']
-  prev_star = review['star']
-  
-  resto_service.update_star_info(resto_id, prev_star, star)
-  return review_db.update_review(id, {'comment':comment, 'star':star})
+def get_review_list(resto_id):
+    return list(
+        review_db.read_reviews_by_resto(
+            resto_id
+        )
+    )
 
-def delete_review(id : str ):
-  return review_db.delete_review(id)
 
-def user_reviewed(resto_id : str, user_id : str):
-  review = review_db.read_review_by_resto_and_user(resto_id, user_id)
-  return review is not None
+def get_reviews_by_user(user_id):
+    return list(
+        review_db.read_reviews_by_user(
+            user_id
+        )
+    )
 
-def user_liked(id : str, user_id : str):
-  review = review_db.read_review(id)
-  if 'liked' not in review:
-    return False
-  return ObjectId(user_id) in review['liked']
+
+def get_avg_star(resto_id):
+    result = review_db.aggregate_avg_star(
+        resto_id
+    )
+
+    if not result:
+        return 0
+
+    return round(
+        result[0]["avg"],
+        1
+    )
+
+
+def get_review_count(resto_id):
+    return review_db.count_reviews_by_resto(
+        resto_id
+    )
+
+
+def user_reviewed(resto_id, user_id):
+    review = review_db.read_review_by_resto_and_user(
+        resto_id,
+        user_id
+    )
+
+    return review is not None
+
+
+def toggle_like(review_id, user_id):
+    try:
+        review = review_db.read_review(
+            review_id
+        )
+
+        user_object_id = ObjectId(
+            user_id
+        )
+    except (InvalidId, TypeError):
+        review = None
+
+    if review is None:
+        return {
+            "success": False,
+            "code": "REVIEW_NOT_FOUND"
+        }
+
+    liked_users = review.get(
+        "liked",
+        []
+    )
+
+    if user_object_id in liked_users:
+        review_db.update_like_cancel(
+            review_id,
+            user_id
+        )
+    else:
+        review_db.update_like_add(
+            review_id,
+            user_id
+        )
+
+    return {
+        "success": True,
+        "resto_id": str(review["resto"])
+    }
+
+
+def edit_review(review_id, user_id, comment, star):
+    try:
+        review = review_db.read_review(
+            review_id
+        )
+
+        user_object_id = ObjectId(
+            user_id
+        )
+    except (InvalidId, TypeError):
+        review = None
+
+    if review is None:
+        return {
+            "success": False,
+            "code": "REVIEW_NOT_FOUND"
+        }
+
+    if review["user"] != user_object_id:
+        return {
+            "success": False,
+            "code": "NOT_REVIEW_OWNER"
+        }
+
+    review_db.update_review(
+        review_id,
+        {
+            "comment": comment,
+            "star": star
+        }
+    )
+
+    return {
+        "success": True
+    }
+
+
+def delete_review(review_id, user_id):
+    try:
+        review = review_db.read_review(
+            review_id
+        )
+
+        user_object_id = ObjectId(
+            user_id
+        )
+    except (InvalidId, TypeError):
+        review = None
+
+    if review is None:
+        return {
+            "success": False,
+            "code": "REVIEW_NOT_FOUND"
+        }
+
+    if review["user"] != user_object_id:
+        return {
+            "success": False,
+            "code": "NOT_REVIEW_OWNER"
+        }
+
+    review_db.delete_review(
+        review_id
+    )
+
+    return {
+        "success": True
+    }
