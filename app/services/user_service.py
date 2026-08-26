@@ -2,12 +2,23 @@ import bcrypt
 
 from app.db import user_db
 
-def check_id_duplication(custom_id: str):
-    return user_db.read_by_custom_id(custom_id) is None
+
+def check_id_duplication(custom_id):
+    return user_db.read_by_custom_id(
+        custom_id
+    ) is None
 
 
-def get_user_name(user_id: str):
-    user = user_db.read_user(user_id)
+def get_user(user_id):
+    return user_db.read_user(
+        user_id
+    )
+
+
+def get_user_name(user_id):
+    user = user_db.read_user(
+        user_id
+    )
 
     if user is None:
         return None
@@ -15,44 +26,51 @@ def get_user_name(user_id: str):
     return user.get("name")
 
 
-def update_user_info(user_id: str, new_info):
-    user = user_db.read_user(user_id)
+def update_user_info(user_id, new_info):
+    user = user_db.read_user(
+        user_id
+    )
 
     if user is None:
         return {
             "success": False,
             "code": "USER_NOT_FOUND",
-            "msg": "해당 사용자를 찾을 수 없습니다."
+            "msg": "사용자를 찾을 수 없습니다."
         }
 
-    if "pw" in new_info:
-        if new_info.get("pw") != new_info.get("pw_confirm"):
+    update_data = {}
+
+    for key in [
+        "name",
+        "track",
+        "cohort",
+        "number"
+    ]:
+        if key in new_info and new_info[key]:
+            update_data[key] = new_info[key]
+
+    if "pw" in new_info or "pw_confirm" in new_info:
+        pw = new_info.get(
+            "pw",
+            ""
+        )
+
+        pw_confirm = new_info.get(
+            "pw_confirm",
+            ""
+        )
+
+        if not pw or pw != pw_confirm:
             return {
                 "success": False,
                 "code": "PW_MISMATCH",
                 "msg": "비밀번호가 일치하지 않습니다."
             }
 
-        new_info["pw"] = bcrypt.hashpw(
-            new_info["pw"].encode("utf-8"),
+        update_data["pw"] = bcrypt.hashpw(
+            pw.encode("utf-8"),
             bcrypt.gensalt()
         ).decode("utf-8")
-
-        new_info.pop("pw_confirm", None)
-
-    allowed_fields = {
-        "name",
-        "track",
-        "cohort",
-        "number",
-        "pw"
-    }
-
-    update_data = {
-        key: value
-        for key, value in new_info.items()
-        if key in allowed_fields
-    }
 
     if not update_data:
         return {
@@ -61,9 +79,12 @@ def update_user_info(user_id: str, new_info):
             "msg": "수정할 정보가 없습니다."
         }
 
-    result = user_db.update_user(user_id, update_data)
+    result = user_db.update_user(
+        user_id,
+        update_data
+    )
 
-    if result.matched_count == 0:
+    if result is None or result.matched_count == 0:
         return {
             "success": False,
             "code": "DATABASE_FAILED",
