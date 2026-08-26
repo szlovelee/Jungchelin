@@ -90,9 +90,9 @@
         <header class="d-flex justify-content-between align-items-center mb-4">
 
             <a href="/home" class="text-decoration-none text-dark">
-                <h1 class="fw-bold mb-0">
-                    정슐랭
-                </h1>
+                <div class="d-flex ">
+                    <img src="{{ url_for('static', filename='img/title.png') }}" width="200">
+                </div>
             </a>
 
             <div class="d-flex gap-2">
@@ -418,7 +418,7 @@
                                         <span class="me-auto">
                                             {{ review.comment }}
                                         </span>
-                                        <form  method="POST" action="/reviews/{{ review._id }}/like">
+                                        <form method="POST" action="/reviews/{{ review._id }}/like">
                                             <button type="submit" class="btn btn-sm">
                                                 {% if review.like_status %}
                                                 <img src="{{ url_for('static', filename='img/thumb.png') }}" alt="좋아요"

@@ -1,15 +1,13 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <title>정슐랭 회원가입</title>
-
-    <link
-        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
-        rel="stylesheet"
-    >
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/signup.css') }}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <style>
         .signup-form {
@@ -24,49 +22,34 @@
 </head>
 
 <body>
+    
     <div class="container py-4">
 
         <div class="d-flex justify-content-end">
-            <a
-                href="/login"
-                class="btn btn-outline-secondary btn-lg"
-            >
+            <a href="/login" class="btn btn-outline-secondary btn-lg">
                 로그인
             </a>
         </div>
-
-        <h1 class="display-1 fw-bold text-center brand-title my-5">
-            정슐랭
-        </h1>
-
-        <form
-            method="POST"
-            action="/signup"
-            class="signup-form mx-auto"
-        >
+        <div class="d-flex justify-content-center ms-5 ps-2 mb-5">
+            <img src="{{ url_for('static', filename='img/title.png') }}" width="400">
+        </div>
+        <form method="POST" action="/signup" class="signup-form mx-auto">
 
             {% if error and error_code != "ID_DUPLICATION" %}
-                <div class="alert alert-danger text-center">
-                    {{ error }}
-                </div>
+            <div class="alert alert-danger text-center">
+                {{ error }}
+            </div>
             {% endif %}
 
 
-            <!-- 이름 -->
+            <!-- 닉네임 -->
             <div class="input-group mb-4">
                 <span class="input-group-text border-0 bg-transparent fs-5">
-                    이름
+                    닉네임
                 </span>
 
-                <input
-                    type="text"
-                    name="name"
-                    class="form-control border-dark"
-                    pattern="[가-힣]+"
-                    placeholder="이름"
-                    value="{{ form_data.name if form_data else '' }}"
-                    required
-                >
+                <input type="text" name="name" class="form-control border-dark" pattern="[가-힣]+" placeholder="닉네임"
+                    value="{{ form_data.name if form_data else '' }}" required>
             </div>
 
 
@@ -76,54 +59,32 @@
                 <div class="col-md-5">
                     <div class="input-group">
                         <span class="input-group-text border-0 bg-transparent fs-5">
-                            소속
+                            소    속
                         </span>
 
-                        <select
-                            name="track"
-                            class="form-select border-dark"
-                            required
-                        >
+                        <select name="track" class="form-select border-dark" required>
                             <option value="">
                                 선택
                             </option>
 
                             {% for track in track_type %}
-                                <option
-                                    value="{{ track }}"
-                                    {% if form_data and track == form_data.track %}
-                                        selected
-                                    {% endif %}
-                                >
-                                    {{ track }}
-                                </option>
+                            <option value="{{ track }}" {% if form_data and track==form_data.track %} selected {% endif
+                                %}>
+                                {{ track }}
+                            </option>
                             {% endfor %}
                         </select>
                     </div>
                 </div>
 
                 <div class="col-md-3">
-                    <input
-                        type="number"
-                        name="cohort"
-                        class="form-control border-dark"
-                        placeholder="기수"
-                        min="1"
-                        value="{{ form_data.cohort if form_data else '' }}"
-                        required
-                    >
+                    <input type="number" name="cohort" class="form-control border-dark" placeholder="기수" min="1"
+                        value="{{ form_data.cohort if form_data else '' }}" required>
                 </div>
 
                 <div class="col-md-4">
-                    <input
-                        type="number"
-                        name="number"
-                        class="form-control border-dark"
-                        placeholder="번호"
-                        min="1"
-                        value="{{ form_data.number if form_data else '' }}"
-                        required
-                    >
+                    <input type="number" name="number" class="form-control border-dark" placeholder="번호" min="1"
+                        value="{{ form_data.number if form_data else '' }}" required>
                 </div>
 
             </div>
@@ -137,22 +98,15 @@
                         아이디
                     </span>
 
-                    <input
-                        type="text"
-                        name="custom_id"
-                        class="form-control border-dark"
-                        pattern="[A-Za-z0-9]+"
-                        minlength="6"
-                        placeholder="영문과 숫자 6자 이상"
-                        value="{{ form_data.custom_id if form_data else '' }}"
-                        required
-                    >
+                    <input type="text" name="custom_id" class="form-control border-dark" pattern="[A-Za-z0-9]+"
+                        minlength="6" placeholder="영문과 숫자 6자 이상" value="{{ form_data.custom_id if form_data else '' }}"
+                        required>
                 </div>
 
                 {% if error_code == "ID_DUPLICATION" %}
-                    <div class="text-danger small mt-1 text-center w-100">
-                        {{ error }}
-                    </div>
+                <div class="text-danger small mt-1 text-center w-100">
+                    {{ error }}
+                </div>
                 {% endif %}
 
             </div>
@@ -164,15 +118,8 @@
                     비밀번호
                 </span>
 
-                <input
-                    type="password"
-                    name="pw"
-                    class="form-control border-dark"
-                    pattern="[A-Za-z0-9!@#$%^&*]+"
-                    minlength="9"
-                    placeholder="비밀번호 9자 이상"
-                    required
-                >
+                <input type="password" name="pw" class="form-control border-dark" pattern="[A-Za-z0-9!@#$%^&*]+"
+                    minlength="9" placeholder="비밀번호 9자 이상" required>
             </div>
 
 
@@ -182,22 +129,13 @@
                     비밀번호 확인
                 </span>
 
-                <input
-                    type="password"
-                    name="pw_confirm"
-                    class="form-control border-dark"
-                    minlength="9"
-                    placeholder="비밀번호 확인"
-                    required
-                >
+                <input type="password" name="pw_confirm" class="form-control border-dark" minlength="9"
+                    placeholder="비밀번호 확인" required>
             </div>
 
 
             <div class="d-flex justify-content-center mt-5">
-                <button
-                    type="submit"
-                    class="btn btn-outline-secondary btn-lg px-5"
-                >
+                <button type="submit" class="signup-btn signup-btn:hover">
                     가입완료
                 </button>
             </div>
@@ -205,4 +143,5 @@
         </form>
     </div>
 </body>
+
 </html>

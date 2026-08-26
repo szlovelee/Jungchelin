@@ -1,15 +1,13 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <title>마이페이지 | 정슐랭</title>
-
-    <link
-        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
-        rel="stylesheet"
-    >
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/mypage.css') }}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 
 <body>
@@ -17,33 +15,20 @@
 
         <header class="d-flex justify-content-between align-items-center mb-5">
 
-            <a
-                href="/home"
-                class="text-decoration-none text-dark"
-            >
-                <h1 class="fw-bold mb-0">
-                    정슐랭
-                </h1>
+            <a href="/home" class="text-decoration-none text-dark">
+                <div class="d-flex">
+                    <img src="{{ url_for('static', filename='img/title.png') }}" width="200">
+                </div>
             </a>
 
             <div class="d-flex gap-2">
 
-                <a
-                    href="/home"
-                    class="btn btn-outline-secondary"
-                >
+                <a href="/home" class="btn btn-outline-secondary">
                     홈으로
                 </a>
 
-                <form
-                    method="POST"
-                    action="/logout"
-                    class="m-0"
-                >
-                    <button
-                        type="submit"
-                        class="btn btn-outline-secondary"
-                    >
+                <form method="POST" action="/logout" class="m-0">
+                    <button type="submit" class="btn btn-outline-secondary">
                         로그아웃
                     </button>
                 </form>
@@ -54,34 +39,34 @@
         {% set error_code = request.args.get("error") %}
 
         {% if error_code %}
-            <div class="alert alert-danger">
+        <div class="alert alert-danger">
 
-                {% if error_code == "PW_MISMATCH" %}
-                    비밀번호가 일치하지 않습니다.
+            {% if error_code == "PW_MISMATCH" %}
+            비밀번호가 일치하지 않습니다.
 
-                {% elif error_code == "PW_TOO_SHORT" %}
-                    비밀번호는 9자 이상 입력해주세요.
+            {% elif error_code == "PW_TOO_SHORT" %}
+            비밀번호는 9자 이상 입력해주세요.
 
-                {% elif error_code == "NO_UPDATES" %}
-                    수정할 정보가 없습니다.
+            {% elif error_code == "NO_UPDATES" %}
+            수정할 정보가 없습니다.
 
-                {% elif error_code == "REVIEW_NOT_FOUND" %}
-                    리뷰를 찾을 수 없습니다.
+            {% elif error_code == "REVIEW_NOT_FOUND" %}
+            리뷰를 찾을 수 없습니다.
 
-                {% elif error_code == "NOT_REVIEW_OWNER" %}
-                    본인이 작성한 리뷰만 수정하거나 삭제할 수 있습니다.
+            {% elif error_code == "NOT_REVIEW_OWNER" %}
+            본인이 작성한 리뷰만 수정하거나 삭제할 수 있습니다.
 
-                {% elif error_code == "review_required" %}
-                    리뷰 내용과 별점을 입력해주세요.
+            {% elif error_code == "review_required" %}
+            리뷰 내용과 별점을 입력해주세요.
 
-                {% elif error_code == "review_star" %}
-                    별점은 1점부터 5점까지 선택해주세요.
+            {% elif error_code == "review_star" %}
+            별점은 1점부터 5점까지 선택해주세요.
 
-                {% else %}
-                    요청을 처리하지 못했습니다.
-                {% endif %}
+            {% else %}
+            요청을 처리하지 못했습니다.
+            {% endif %}
 
-            </div>
+        </div>
         {% endif %}
 
         <main class="row g-4">
@@ -96,52 +81,27 @@
                             내 정보
                         </h2>
 
-                        <form
-                            method="POST"
-                            action="/mypage"
-                        >
+                        <form method="POST" action="/mypage">
 
                             <div class="mb-3">
-                                <label
-                                    for="name"
-                                    class="form-label"
-                                >
-                                    이름
+                                <label for="name" class="form-label">
+                                    닉네임
                                 </label>
 
-                                <input
-                                    type="text"
-                                    id="name"
-                                    name="name"
-                                    class="form-control"
-                                    value="{{ user.name }}"
-                                    required
-                                >
+                                <input type="text" id="name" name="name" class="form-control" value="{{ user.name }}"
+                                    required>
                             </div>
 
                             <div class="mb-3">
-                                <label
-                                    for="track"
-                                    class="form-label"
-                                >
+                                <label for="track" class="form-label">
                                     소속
                                 </label>
 
-                                <select
-                                    id="track"
-                                    name="track"
-                                    class="form-select"
-                                    required
-                                >
+                                <select id="track" name="track" class="form-select" required>
                                     {% for track in track_type %}
-                                        <option
-                                            value="{{ track }}"
-                                            {% if track == user.track %}
-                                                selected
-                                            {% endif %}
-                                        >
-                                            {{ track }}
-                                        </option>
+                                    <option value="{{ track }}" {% if track==user.track %} selected {% endif %}>
+                                        {{ track }}
+                                    </option>
                                     {% endfor %}
                                 </select>
                             </div>
@@ -149,41 +109,21 @@
                             <div class="row g-2 mb-3">
 
                                 <div class="col">
-                                    <label
-                                        for="cohort"
-                                        class="form-label"
-                                    >
+                                    <label for="cohort" class="form-label">
                                         기수
                                     </label>
 
-                                    <input
-                                        type="number"
-                                        id="cohort"
-                                        name="cohort"
-                                        class="form-control"
-                                        value="{{ user.cohort }}"
-                                        min="1"
-                                        required
-                                    >
+                                    <input type="number" id="cohort" name="cohort" class="form-control"
+                                        value="{{ user.cohort }}" min="1" required>
                                 </div>
 
                                 <div class="col">
-                                    <label
-                                        for="number"
-                                        class="form-label"
-                                    >
+                                    <label for="number" class="form-label">
                                         번호
                                     </label>
 
-                                    <input
-                                        type="number"
-                                        id="number"
-                                        name="number"
-                                        class="form-control"
-                                        value="{{ user.number }}"
-                                        min="1"
-                                        required
-                                    >
+                                    <input type="number" id="number" name="number" class="form-control"
+                                        value="{{ user.number }}" min="1" required>
                                 </div>
 
                             </div>
@@ -191,48 +131,27 @@
                             <hr>
 
                             <div class="mb-3">
-                                <label
-                                    for="pw"
-                                    class="form-label"
-                                >
+                                <label for="pw" class="form-label">
                                     새 비밀번호
                                 </label>
 
-                                <input
-                                    type="password"
-                                    id="pw"
-                                    name="pw"
-                                    class="form-control"
-                                    minlength="9"
-                                    placeholder="변경할 때만 입력"
-                                >
+                                <input type="password" id="pw" name="pw" class="form-control" minlength="9"
+                                    placeholder="변경할 때만 입력">
                             </div>
 
                             <div class="mb-4">
-                                <label
-                                    for="pw_confirm"
-                                    class="form-label"
-                                >
+                                <label for="pw_confirm" class="form-label">
                                     새 비밀번호 확인
                                 </label>
 
-                                <input
-                                    type="password"
-                                    id="pw_confirm"
-                                    name="pw_confirm"
-                                    class="form-control"
-                                    minlength="9"
-                                    placeholder="변경할 때만 입력"
-                                >
+                                <input type="password" id="pw_confirm" name="pw_confirm" class="form-control"
+                                    minlength="9" placeholder="변경할 때만 입력">
                             </div>
-
-                            <button
-                                type="submit"
-                                class="btn btn-dark w-100"
-                            >
-                                정보 수정
-                            </button>
-
+                            <div class="d-flex justify-content-center">
+                                <button type="submit" class="edit-btn edit-btn-hover">
+                                    정보 수정
+                                </button>
+                            </div>
                         </form>
                     </div>
                 </div>
@@ -253,114 +172,80 @@
 
                             {% for review in reviews %}
 
-                                <div class="list-group-item">
+                            <div class="list-group-item">
 
-                                    <div class="d-flex justify-content-between">
-                                        <strong>
-                                            {{ review.resto.name }}
-                                        </strong>
+                                <div class="d-flex justify-content-between">
+                                    <strong>
+                                        {{ review.resto.name }}
+                                    </strong>
 
-                                        <span class="text-warning">
-                                            ★ {{ review.star }}
-                                        </span>
-                                    </div>
-
-                                    <p class="mt-2 mb-2">
-                                        {{ review.comment }}
-                                    </p>
-
-                                    <div class="d-flex justify-content-between align-items-center">
-
-                                        <span class="text-secondary">
-                                            <img src="{{ url_for('static', filename='img/thumb.png') }}" alt="좋아요"
-                                                width="30"> {{ review.like }}
-                                        </span>
-
-                                        <div class="d-flex gap-2">
-
-                                            <button
-                                                type="button"
-                                                class="btn btn-sm btn-outline-secondary"
-                                                data-bs-toggle="collapse"
-                                                data-bs-target="#editReview{{ review._id }}"
-                                            >
-                                                수정
-                                            </button>
-
-                                            <form
-                                                method="POST"
-                                                action="/reviews/{{ review._id }}/delete"
-                                                class="m-0"
-                                            >
-                                                <button
-                                                    type="submit"
-                                                    class="btn btn-sm btn-outline-danger"
-                                                >
-                                                    삭제
-                                                </button>
-                                            </form>
-
-                                        </div>
-                                    </div>
-
-                                    <div
-                                        id="editReview{{ review._id }}"
-                                        class="collapse mt-3"
-                                    >
-                                        <form
-                                            method="POST"
-                                            action="/reviews/{{ review._id }}/edit"
-                                            class="row g-2"
-                                        >
-
-                                            <div class="col-md-7">
-                                                <input
-                                                    type="text"
-                                                    name="comment"
-                                                    class="form-control"
-                                                    value="{{ review.comment }}"
-                                                    required
-                                                >
-                                            </div>
-
-                                            <div class="col-md-3">
-                                                <select
-                                                    name="star"
-                                                    class="form-select"
-                                                    required
-                                                >
-                                                    {% for score in range(1, 6) %}
-                                                        <option
-                                                            value="{{ score }}"
-                                                            {% if score == review.star %}
-                                                                selected
-                                                            {% endif %}
-                                                        >
-                                                            {{ score }}점
-                                                        </option>
-                                                    {% endfor %}
-                                                </select>
-                                            </div>
-
-                                            <div class="col-md-2">
-                                                <button
-                                                    type="submit"
-                                                    class="btn btn-dark w-100"
-                                                >
-                                                    저장
-                                                </button>
-                                            </div>
-
-                                        </form>
-                                    </div>
-
+                                    <span class="text-warning">
+                                        ★ {{ review.star }}
+                                    </span>
                                 </div>
+
+                                <p class="mt-2 mb-2">
+                                    {{ review.comment }}
+                                </p>
+
+                                <div class="d-flex justify-content-between align-items-center">
+
+                                    <span class="text-secondary">
+                                        <img src="{{ url_for('static', filename='img/thumb.png') }}" alt="좋아요"
+                                            width="30"> {{ review.like }}
+                                    </span>
+
+                                    <div class="d-flex gap-2">
+
+                                        <button type="button" class="btn btn-sm btn-outline-secondary"
+                                            data-bs-toggle="collapse" data-bs-target="#editReview{{ review._id }}">
+                                            수정
+                                        </button>
+
+                                        <form method="POST" action="/reviews/{{ review._id }}/delete" class="m-0">
+                                            <button type="submit" class="btn btn-sm btn-outline-danger">
+                                                삭제
+                                            </button>
+                                        </form>
+
+                                    </div>
+                                </div>
+
+                                <div id="editReview{{ review._id }}" class="collapse mt-3">
+                                    <form method="POST" action="/reviews/{{ review._id }}/edit" class="row g-2">
+
+                                        <div class="col-md-7">
+                                            <input type="text" name="comment" class="form-control"
+                                                value="{{ review.comment }}" required>
+                                        </div>
+
+                                        <div class="col-md-3">
+                                            <select name="star" class="form-select" required>
+                                                {% for score in range(1, 6) %}
+                                                <option value="{{ score }}" {% if score==review.star %} selected {%
+                                                    endif %}>
+                                                    {{ score }}점
+                                                </option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+
+                                        <div class="col-md-2">
+                                            <button type="submit" class="btn btn-dark w-100">
+                                                저장
+                                            </button>
+                                        </div>
+
+                                    </form>
+                                </div>
+
+                            </div>
 
                             {% else %}
 
-                                <div class="text-secondary">
-                                    작성한 리뷰가 없습니다.
-                                </div>
+                            <div class="text-secondary">
+                                작성한 리뷰가 없습니다.
+                            </div>
 
                             {% endfor %}
 
@@ -373,8 +258,8 @@
         </main>
     </div>
 
-    <script
-        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js">
     </script>
 </body>
+
 </html>
