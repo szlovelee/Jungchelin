@@ -6,6 +6,7 @@ from flask import (
 )
 
 from . import bp
+from app import constants
 from app.services import auth_service
 from app.services import user_service
 from app.utils.jwt_utils import create_token
@@ -14,7 +15,8 @@ from app.utils.jwt_utils import create_token
 @bp.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "GET":
-        return render_template("login.html")
+        track_type = constants.TRACK_TYPE
+        return render_template("login.html", track_type=track_type)
 
     custom_id = request.form.get("custom_id", "").strip()
     pw = request.form.get("pw", "")
