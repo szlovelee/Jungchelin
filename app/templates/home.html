@@ -3,11 +3,17 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1"
+    >
 
     <title>정슐랭</title>
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
 
     <style>
         body {
@@ -87,9 +93,14 @@
     <div class="container-fluid px-4 py-4">
 
         <!-- 헤더 -->
-        <header class="d-flex justify-content-between align-items-center mb-4">
+        <header
+            class="d-flex justify-content-between align-items-center mb-4"
+        >
 
-            <a href="/home" class="text-decoration-none text-dark">
+            <a
+                href="/home"
+                class="text-decoration-none text-dark"
+            >
                 <h1 class="fw-bold mb-0">
                     정슐랭
                 </h1>
@@ -97,16 +108,31 @@
 
             <div class="d-flex gap-2">
 
-                <button type="button" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#restaurantModal">
+                <button
+                    type="button"
+                    class="btn btn-dark"
+                    data-bs-toggle="modal"
+                    data-bs-target="#restaurantModal"
+                >
                     식당 등록
                 </button>
 
-                <a href="/mypage" class="btn btn-outline-secondary">
+                <a
+                    href="/mypage"
+                    class="btn btn-outline-secondary"
+                >
                     마이페이지
                 </a>
 
-                <form method="POST" action="/logout" class="m-0">
-                    <button type="submit" class="btn btn-outline-secondary">
+                <form
+                    method="POST"
+                    action="/logout"
+                    class="m-0"
+                >
+                    <button
+                        type="submit"
+                        class="btn btn-outline-secondary"
+                    >
                         로그아웃
                     </button>
                 </form>
@@ -119,7 +145,10 @@
         {% set error = request.args.get("error") %}
 
         {% if error and error != "duplicate" %}
-        <div class="alert alert-danger" role="alert">
+        <div
+            class="alert alert-danger"
+            role="alert"
+        >
 
             {% if error == "required" %}
             필수 항목을 모두 입력해주세요.
@@ -149,22 +178,43 @@
             <!-- 식당 목록 -->
             <section class="col-lg-4">
 
-                <div class="d-flex justify-content-between align-items-center mb-3">
+                <div
+                    class="d-flex justify-content-between align-items-center mb-3"
+                >
 
                     <h4 class="fw-bold mb-0">
                         식당 목록
                     </h4>
 
-                    <select id="sortSelect" class="form-select w-auto" onchange="changeSort()">
-                        <option value="star" {% if current_sort=="star" %} selected {% endif %}>
+                    <select
+                        id="sortSelect"
+                        class="form-select w-auto"
+                        onchange="changeSort()"
+                    >
+                        <option
+                            value="star"
+                            {% if current_sort=="star" %}
+                            selected
+                            {% endif %}
+                        >
                             별점 높은 순
                         </option>
 
-                        <option value="review" {% if current_sort=="review" %} selected {% endif %}>
+                        <option
+                            value="review"
+                            {% if current_sort=="review" %}
+                            selected
+                            {% endif %}
+                        >
                             리뷰 많은 순
                         </option>
 
-                        <option value="name" {% if current_sort=="name" %} selected {% endif %}>
+                        <option
+                            value="name"
+                            {% if current_sort=="name" %}
+                            selected
+                            {% endif %}
+                        >
                             가나다 순
                         </option>
                     </select>
@@ -176,29 +226,40 @@
 
                     {% for restaurant in restaurants %}
 
-                    <a href="/home?restaurant_id={{ restaurant._id }}&sort={{ current_sort }}"
-                        class="text-decoration-none text-dark">
+                    <a
+                        href="/home?restaurant_id={{ restaurant._id }}&sort={{ current_sort }}"
+                        class="text-decoration-none text-dark"
+                    >
 
                         <div class="
-                                card
-                                restaurant-card
-                                mb-3
+                            card
+                            restaurant-card
+                            mb-3
 
-                                {% if selected_restaurant
-                                    and selected_restaurant._id == restaurant._id %}
-                                    active
-                                {% endif %}
-                            ">
+                            {% if selected_restaurant
+                                and selected_restaurant._id == restaurant._id %}
+                                active
+                            {% endif %}
+                        ">
 
                             <!-- 고정핀 -->
-                            <form method="POST" action="/restaurants/{{restaurant._id}}/pin">
-                                <button type="submit" class="
+                            <form
+                                method="POST"
+                                action="/restaurants/{{ restaurant._id }}/pin"
+                            >
+                                <button
+                                    type="submit"
+                                    class="
                                         pin-button
+
                                         {% if restaurant._id in pinned %}
                                             active
                                         {% endif %}
-                                    " data-restaurant-id="{{ restaurant._id }}" aria-label="식당 고정"
-                                    aria-pressed="{% if restaurant._id in pinned %}true{% else %}false{% endif %}">
+                                    "
+                                    data-restaurant-id="{{ restaurant._id }}"
+                                    aria-label="식당 고정"
+                                    aria-pressed="{% if restaurant._id in pinned %}true{% else %}false{% endif %}"
+                                >
                                     📌
                                 </button>
                             </form>
@@ -224,7 +285,9 @@
                                 </p>
                                 {% endif %}
 
-                                <div class="d-flex justify-content-between align-items-end mt-3">
+                                <div
+                                    class="d-flex justify-content-between align-items-end mt-3"
+                                >
 
                                     <small class="text-secondary">
                                         리뷰 {{ restaurant.review_count }}개
@@ -266,7 +329,9 @@
 
                         <div class="mb-4">
 
-                            <div class="d-flex justify-content-between align-items-start">
+                            <div
+                                class="d-flex justify-content-between align-items-start"
+                            >
 
                                 <div>
 
@@ -327,19 +392,35 @@
                                     리뷰 작성
                                 </h5>
 
-                                <form method="POST" action="/reviews">
+                                <form
+                                    method="POST"
+                                    action="/reviews"
+                                >
 
-                                    <input type="hidden" name="restaurant_id" value="{{ selected_restaurant._id }}">
+                                    <input
+                                        type="hidden"
+                                        name="restaurant_id"
+                                        value="{{ selected_restaurant._id }}"
+                                    >
 
                                     <div class="row g-2">
 
                                         <div class="col-md-7">
-                                            <input type="text" name="comment" class="form-control"
-                                                placeholder="한줄평을 입력해주세요." required>
+                                            <input
+                                                type="text"
+                                                name="comment"
+                                                class="form-control"
+                                                placeholder="한줄평을 입력해주세요."
+                                                required
+                                            >
                                         </div>
 
                                         <div class="col-md-3">
-                                            <select name="star" class="form-select" required>
+                                            <select
+                                                name="star"
+                                                class="form-select"
+                                                required
+                                            >
                                                 <option value="">
                                                     별점
                                                 </option>
@@ -367,7 +448,10 @@
                                         </div>
 
                                         <div class="col-md-2">
-                                            <button type="submit" class="btn btn-dark w-100">
+                                            <button
+                                                type="submit"
+                                                class="btn btn-dark w-100"
+                                            >
                                                 등록
                                             </button>
                                         </div>
@@ -394,13 +478,17 @@
 
                                 <div>
 
-                                    <div class="d-flex justify-content-between align-items-start">
+                                    <div
+                                        class="d-flex justify-content-between align-items-start"
+                                    >
 
                                         <strong>
                                             {{ review.nickname or "알 수 없는 사용자" }}
                                         </strong>
 
-                                        <span class="text-warning d-flex justify-content-end mt-1 mb-1 me-2">
+                                        <span
+                                            class="text-warning d-flex justify-content-end mt-1 mb-1 me-2"
+                                        >
 
                                             {% for i in range(review.star) %}
                                             ★
@@ -409,27 +497,50 @@
                                             {% for i in range(5 - review.star) %}
                                             ☆
                                             {% endfor %}
+
                                             <span class="text-dark ms-2">
                                                 {{ review.star }}점
                                             </span>
+
                                         </span>
                                     </div>
-                                    <div class="d-flex align-items-center mb-0">
+
+                                    <div
+                                        class="d-flex align-items-center mb-0"
+                                    >
+
                                         <span class="me-auto">
                                             {{ review.comment }}
                                         </span>
-                                        <form  method="POST" action="/reviews/{{ review._id }}/like">
-                                            <button type="submit" class="btn btn-sm">
+
+                                        <form
+                                            method="POST"
+                                            action="/reviews/{{ review._id }}/like"
+                                        >
+                                            <button
+                                                type="submit"
+                                                class="btn btn-sm"
+                                            >
                                                 {% if review.like_status %}
-                                                <img src="{{ url_for('static', filename='img/thumb.png') }}" alt="좋아요"
-                                                    width="30">
+                                                <img
+                                                    src="{{ url_for('static', filename='img/thumb.png') }}"
+                                                    alt="좋아요"
+                                                    width="30"
+                                                >
                                                 {% else %}
-                                                <img src="{{ url_for('static', filename='img/no-thumb.png') }}"
-                                                    alt="좋아요 취소" width="30">
+                                                <img
+                                                    src="{{ url_for('static', filename='img/no-thumb.png') }}"
+                                                    alt="좋아요 취소"
+                                                    width="30"
+                                                >
                                                 {% endif %}
-                                                <span>{{ review.like or 0 }}</span>
+
+                                                <span>
+                                                    {{ review.like or 0 }}
+                                                </span>
                                             </button>
                                         </form>
+
                                     </div>
                                 </div>
 
@@ -448,11 +559,11 @@
                         {% else %}
 
                         <div class="
-                                empty-detail
-                                d-flex
-                                justify-content-center
-                                align-items-center
-                            ">
+                            empty-detail
+                            d-flex
+                            justify-content-center
+                            align-items-center
+                        ">
                             <span class="text-secondary">
                                 식당을 선택해주세요.
                             </span>
@@ -472,7 +583,12 @@
 
 
     <!-- 식당 등록 모달 -->
-    <div class="modal fade" id="restaurantModal" tabindex="-1" aria-hidden="true">
+    <div
+        class="modal fade"
+        id="restaurantModal"
+        tabindex="-1"
+        aria-hidden="true"
+    >
         <div class="modal-dialog modal-dialog-centered">
 
             <div class="modal-content">
@@ -483,29 +599,58 @@
                         식당 등록
                     </h5>
 
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <button
+                        type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close"
+                    >
                     </button>
 
                 </div>
 
-                <form id="restaurantForm" method="POST" action="/restaurants">
+                <form
+                    id="restaurantForm"
+                    method="POST"
+                    action="/restaurants"
+                >
 
                     <div class="modal-body">
 
                         <div class="mb-3">
-                            <label for="restaurantName" class="form-label">
+
+                            <label
+                                for="restaurantName"
+                                class="form-label"
+                            >
                                 식당 이름
                             </label>
 
-                            <input type="text" id="restaurantName" name="name" class="form-control" required>
+                            <input
+                                type="text"
+                                id="restaurantName"
+                                name="name"
+                                class="form-control"
+                                required
+                            >
+
                         </div>
 
                         <div class="mb-3">
-                            <label for="restaurantCategory" class="form-label">
+
+                            <label
+                                for="restaurantCategory"
+                                class="form-label"
+                            >
                                 분류
                             </label>
 
-                            <select id="restaurantCategory" name="category" class="form-select" required>
+                            <select
+                                id="restaurantCategory"
+                                name="category"
+                                class="form-select"
+                                required
+                            >
                                 <option value="">
                                     분류 선택
                                 </option>
@@ -538,22 +683,51 @@
                                     기타
                                 </option>
                             </select>
+
                         </div>
 
                         <div class="mb-3">
-                            <label for="restaurantAddr" class="form-label">
+
+                            <label
+                                for="restaurantAddr"
+                                class="form-label"
+                            >
                                 주소
                             </label>
 
-                            <input type="text" id="restaurantAddr" name="addr" class="form-control" required>
+                            <input
+                                type="text"
+                                id="restaurantAddr"
+                                name="addr"
+                                class="form-control"
+                                required
+                            >
+
+                            <div
+                                id="restaurantDuplicateError"
+                                class="small text-danger mt-1 d-none"
+                                role="alert"
+                            >
+                            </div>
+
                         </div>
 
                         <div class="mb-3">
-                            <label for="restaurantMenu" class="form-label">
+
+                            <label
+                                for="restaurantMenu"
+                                class="form-label"
+                            >
                                 대표 메뉴
                             </label>
 
-                            <input type="text" id="restaurantMenu" name="main_menu" class="form-control">
+                            <input
+                                type="text"
+                                id="restaurantMenu"
+                                name="main_menu"
+                                class="form-control"
+                            >
+
                         </div>
 
                     </div>
@@ -561,16 +735,25 @@
                     <div class="modal-footer">
 
                         <!-- 이메일 신고 링크 -->
-                        <a href="mailto:dhrho1208@gmail.com?subject=%EC%8B%9D%EB%8B%B9%20%EC%A0%95%EB%B3%B4%20%EB%B6%88%EC%9D%BC%EC%B9%98%20%EC%8B%A0%EA%B3%A0"
-                            class="me-auto text-dark">
+                        <a
+                            href="mailto:dhrho1208@gmail.com?subject=%EC%8B%9D%EB%8B%B9%20%EC%A0%95%EB%B3%B4%20%EB%B6%88%EC%9D%BC%EC%B9%98%20%EC%8B%A0%EA%B3%A0"
+                            class="me-auto text-dark"
+                        >
                             식당 불일치 신고하기
                         </a>
 
-                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                        <button
+                            type="button"
+                            class="btn btn-outline-secondary"
+                            data-bs-dismiss="modal"
+                        >
                             취소
                         </button>
 
-                        <button type="submit" class="btn btn-dark">
+                        <button
+                            type="submit"
+                            class="btn btn-dark"
+                        >
                             등록
                         </button>
 
@@ -583,19 +766,27 @@
     </div>
 
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js">
+    <script
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+    >
     </script>
 
-    <script src="{{ url_for('static', filename='js/main.js') }}">
+    <script
+        src="{{ url_for('static', filename='js/main.js') }}"
+    >
     </script>
 
     <script>
         function changeSort() {
             const sortValue =
-                document.getElementById("sortSelect").value;
+                document.getElementById(
+                    "sortSelect"
+                ).value;
 
             const params =
-                new URLSearchParams(window.location.search);
+                new URLSearchParams(
+                    window.location.search
+                );
 
             params.set(
                 "sort",
@@ -603,7 +794,8 @@
             );
 
             window.location.href =
-                "/home?" + params.toString();
+                "/home?" +
+                params.toString();
         }
     </script>
 
