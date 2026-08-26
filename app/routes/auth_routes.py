@@ -53,12 +53,12 @@ def login():
 
 @bp.route("/signup", methods=["GET", "POST"])
 def signup():
-    track_types = user_service.get_track_types()
+    track_type = constants.TRACK_TYPE
 
     if request.method == "GET":
         return render_template(
             "signup.html",
-            track_types=track_types
+            track_type=track_type
         )
 
     user = {
@@ -74,7 +74,7 @@ def signup():
     if not all(user.values()):
         return render_template(
             "signup.html",
-            track_types=track_types,
+            track_type=track_type,
             error="모든 항목을 입력해주세요."
         )
 
@@ -83,7 +83,7 @@ def signup():
     if not result["success"]:
         return render_template(
             "signup.html",
-            track_types=track_types,
+            track_type=track_type,
             error=result["msg"]
         )
 
