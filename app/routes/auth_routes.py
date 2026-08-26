@@ -74,7 +74,7 @@ def signup():
     if not all(user.values()):
         return render_template(
             "signup.html",
-            track_types=track_types,
+            track_type=track_type,
             error="모든 항목을 입력해주세요."
         )
 
@@ -83,7 +83,7 @@ def signup():
     if not result["success"]:
         return render_template(
             "signup.html",
-            track_types=track_types,
+            track_type=track_type,
             error=result["msg"]
         )
 
