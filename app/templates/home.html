@@ -4,354 +4,768 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>홈 | 정슐랭</title>
+    <title>정슐랭</title>
 
     <link
         href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
         rel="stylesheet"
     >
 
-    <link
-        rel="stylesheet"
-        href="{{ url_for('static', filename='css/style.css') }}"
-    >
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .sidebar {
+            height: calc(100vh - 100px);
+            overflow-y: auto;
+        }
+
+        .restaurant-card {
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .restaurant-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .restaurant-card.active {
+            border: 2px solid #212529;
+        }
+
+        .detail-area {
+            min-height: calc(100vh - 140px);
+        }
+
+        .review-card {
+            border-bottom: 1px solid #dee2e6;
+            padding: 16px 0;
+        }
+
+        .review-card:last-child {
+            border-bottom: none;
+        }
+
+        .empty-detail {
+            min-height: 500px;
+        }
+    </style>
 </head>
 
 <body>
-    <div class="container-fluid py-4 px-4">
 
-        <!-- 상단 -->
-        <header class="d-flex justify-content-between align-items-center mb-5">
-            <h1 class="logo mb-0">
+<div class="container-fluid px-4 py-3">
+
+    <!-- 상단 헤더 -->
+    <header class="d-flex justify-content-between align-items-center mb-4">
+
+        <a
+            href="/home"
+            class="text-decoration-none text-dark"
+        >
+            <h1 class="fw-bold mb-0">
                 정슐랭
             </h1>
+        </a>
 
-            <div class="d-flex gap-2">
-                <a href="/mypage" class="btn btn-outline-secondary">
-                    마이페이지
-                </a>
+        <div class="d-flex gap-2">
 
-                <form method="POST" action="/logout">
-                    <button
-                        type="submit"
-                        class="btn btn-outline-secondary"
+            <!-- 식당 등록 -->
+            <button
+                type="button"
+                class="btn btn-dark"
+                data-bs-toggle="modal"
+                data-bs-target="#restaurantModal"
+            >
+                식당 등록
+            </button>
+
+            <!-- 마이페이지 -->
+            <a
+                href="/mypage"
+                class="btn btn-outline-dark"
+            >
+                마이페이지
+            </a>
+
+            <!-- 로그아웃 -->
+            <form
+                method="POST"
+                action="/logout"
+                class="m-0"
+            >
+                <button
+                    type="submit"
+                    class="btn btn-outline-secondary"
+                >
+                    로그아웃
+                </button>
+            </form>
+
+        </div>
+    </header>
+
+
+    <!-- 오류 메시지 -->
+    {% if request.args.get("error") %}
+
+        {% set error = request.args.get("error") %}
+
+        <div class="alert alert-danger">
+
+            {% if error == "required" %}
+                필수 항목을 모두 입력해주세요.
+
+            {% elif error == "duplicate" %}
+                이미 등록된 식당입니다.
+
+            {% elif error == "review_required" %}
+                리뷰 내용과 별점을 입력해주세요.
+
+            {% elif error == "review_star" %}
+                별점은 1점부터 5점까지 선택해주세요.
+
+            {% elif error == "REVIEW_DUPLICATION" %}
+                이 식당에는 이미 리뷰를 작성했습니다.
+
+            {% elif error == "REVIEW_NOT_FOUND" %}
+                리뷰를 찾을 수 없습니다.
+
+            {% else %}
+                요청을 처리하는 중 문제가 발생했습니다.
+            {% endif %}
+
+        </div>
+
+    {% endif %}
+
+
+    <main class="row g-4">
+
+        <!-- ========================= -->
+        <!-- 왼쪽 식당 목록 -->
+        <!-- ========================= -->
+
+        <section class="col-lg-4">
+
+            <!-- 정렬 -->
+            <div class="d-flex justify-content-between align-items-center mb-3">
+
+                <h4 class="fw-bold mb-0">
+                    식당 목록
+                </h4>
+
+                <select
+                    id="sortSelect"
+                    class="form-select w-auto"
+                    onchange="changeSort()"
+                >
+                    <option
+                        value="star"
+                        {% if current_sort == "star" %}
+                            selected
+                        {% endif %}
                     >
-                        로그아웃
-                    </button>
-                </form>
+                        별점 높은 순
+                    </option>
+
+                    <option
+                        value="review"
+                        {% if current_sort == "review" %}
+                            selected
+                        {% endif %}
+                    >
+                        리뷰 많은 순
+                    </option>
+
+                    <option
+                        value="name"
+                        {% if current_sort == "name" %}
+                            selected
+                        {% endif %}
+                    >
+                        가나다 순
+                    </option>
+                </select>
+
             </div>
-        </header>
 
-        <!-- 메인 -->
-        <main class="row g-4">
 
-            <!-- 왼쪽 식당 목록 -->
-            <section class="col-lg-5">
+            <div class="sidebar">
 
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <form method="GET" action="/home">
-                        <select
-                            name="sort"
-                            class="form-select"
-                            onchange="this.form.submit()"
-                        >
-                            <option value="star">별점 높은 순</option>
-                            <option value="review">리뷰 많은 순</option>
-                            <option value="name">가나다 순</option>
-                        </select>
-                    </form>
+                {% for restaurant in restaurants %}
 
-                    <button
-                        type="button"
-                        class="btn btn-dark"
-                        data-bs-toggle="modal"
-                        data-bs-target="#restaurantModal"
+                    <a
+                        href="/home?restaurant_id={{ restaurant._id }}&sort={{ current_sort }}"
+                        class="text-decoration-none text-dark"
                     >
-                        + 식당 추가
-                    </button>
-                </div>
 
-                <div class="row g-3">
-                    {% for restaurant in restaurants %}
-                        <div class="col-md-6">
-                            <a
-                                href="/home?restaurant_id={{ restaurant._id }}"
-                                class="text-decoration-none"
-                            >
-                                <div class="card h-100 shadow-sm">
-                                    <div class="card-body">
+                        <div
+                            class="
+                                card
+                                restaurant-card
+                                mb-3
 
-                                        <div class="d-flex justify-content-between">
-                                            <span class="badge text-bg-secondary">
-                                                {{ restaurant.category }}
-                                            </span>
+                                {% if selected_restaurant
+                                    and selected_restaurant._id == restaurant._id %}
+                                    active
+                                {% endif %}
+                            "
+                        >
 
-                                            <span class="text-warning">
-                                                ★ {{ restaurant.average_rating or "0.0" }}
-                                            </span>
-                                        </div>
+                            <div class="card-body">
 
-                                        <h5 class="card-title mt-4 text-dark">
+                                <div class="d-flex justify-content-between align-items-start">
+
+                                    <div>
+                                        <h5 class="card-title fw-bold">
                                             {{ restaurant.name }}
                                         </h5>
 
-                                        <p class="card-text text-secondary">
-                                            {{ restaurant.addr }}
+                                        <p class="text-secondary mb-2">
+                                            {{ restaurant.category }}
                                         </p>
-
-                                        {% if restaurant.main_menu %}
-                                            <p class="card-text text-secondary">
-                                                대표 메뉴: {{ restaurant.main_menu }}
-                                            </p>
-                                        {% endif %}
-
                                     </div>
+
+                                    <span class="fw-bold text-warning">
+                                        ★ {{ restaurant.average_rating }}
+                                    </span>
+
                                 </div>
-                            </a>
-                        </div>
-                    {% else %}
-                        <div class="col-12">
-                            <div class="alert alert-light">
-                                등록된 식당이 없습니다.
+
+                                <p class="mb-2">
+                                    {{ restaurant.addr }}
+                                </p>
+
+                                {% if restaurant.main_menu %}
+                                    <p class="mb-2">
+                                        대표 메뉴:
+                                        {{ restaurant.main_menu }}
+                                    </p>
+                                {% endif %}
+
+                                <small class="text-secondary">
+                                    리뷰 {{ restaurant.review_count }}개
+                                </small>
+
                             </div>
+
                         </div>
-                    {% endfor %}
-                </div>
 
-            </section>
+                    </a>
 
-            <!-- 오른쪽 상세 영역 -->
-            <section class="col-lg-7">
+                {% else %}
 
-                <div class="card shadow-sm h-100">
+                    <div class="text-center text-secondary py-5">
+                        아직 등록된 식당이 없습니다.
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        </section>
+
+
+        <!-- ========================= -->
+        <!-- 오른쪽 식당 상세 -->
+        <!-- ========================= -->
+
+        <section class="col-lg-8">
+
+            <div class="card shadow-sm detail-area">
+
+                <div class="card-body">
+
                     {% if selected_restaurant %}
 
-                        <div class="card-body">
+                        <!-- 식당 기본 정보 -->
+
+                        <div class="mb-4">
 
                             <div class="d-flex justify-content-between align-items-start">
+
                                 <div>
-                                    <h2 class="card-title">
+
+                                    <h2 class="fw-bold">
                                         {{ selected_restaurant.name }}
                                     </h2>
 
-                                    <span class="badge text-bg-secondary">
+                                    <p class="text-secondary mb-2">
                                         {{ selected_restaurant.category }}
-                                    </span>
+                                    </p>
+
                                 </div>
 
-                                <h4 class="text-warning">
-                                    ★ {{ selected_restaurant.average_rating or "0.0" }}
-                                </h4>
+                                <div class="text-end">
+
+                                    <div class="fs-4 fw-bold text-warning">
+                                        ★ {{ selected_restaurant.average_rating }}
+                                    </div>
+
+                                    <small class="text-secondary">
+                                        리뷰 {{ selected_restaurant.review_count }}개
+                                    </small>
+
+                                </div>
+
                             </div>
 
-                            <p class="text-secondary mt-3">
+                            <hr>
+
+                            <p>
+                                <strong>주소</strong><br>
                                 {{ selected_restaurant.addr }}
                             </p>
 
                             {% if selected_restaurant.main_menu %}
-                                <p class="text-secondary">
-                                    대표 메뉴: {{ selected_restaurant.main_menu }}
+
+                                <p>
+                                    <strong>대표 메뉴</strong><br>
+                                    {{ selected_restaurant.main_menu }}
                                 </p>
+
                             {% endif %}
 
                             {% if selected_restaurant.creator_name %}
+
                                 <p class="text-secondary">
-                                    {{ selected_restaurant.creator_name }}님이 등록한 식당
+                                    등록자:
+                                    {{ selected_restaurant.creator_name }}
                                 </p>
+
                             {% endif %}
 
-                            <hr>
+                        </div>
 
-                            <!-- 리뷰 작성 -->
-                            <form
-                                method="POST"
-                                action="/reviews"
-                                class="row g-2 mb-4"
-                            >
-                                <input
-                                    type="hidden"
-                                    name="restaurant_id"
-                                    value="{{ selected_restaurant._id }}"
+
+                        <!-- ========================= -->
+                        <!-- 리뷰 작성 -->
+                        <!-- ========================= -->
+
+                        <div class="card bg-light mb-4">
+
+                            <div class="card-body">
+
+                                <h5 class="fw-bold mb-3">
+                                    리뷰 작성
+                                </h5>
+
+                                <form
+                                    method="POST"
+                                    action="/reviews"
                                 >
 
-                                <div class="col-md-7">
+                                    <!-- 어느 식당의 리뷰인지 전달 -->
                                     <input
-                                        type="text"
-                                        name="comment"
-                                        class="form-control"
-                                        placeholder="한줄평"
-                                        required
+                                        type="hidden"
+                                        name="restaurant_id"
+                                        value="{{ selected_restaurant._id }}"
                                     >
-                                </div>
 
-                                <div class="col-md-3">
-                                    <select
-                                        name="star"
-                                        class="form-select"
-                                        required
-                                    >
-                                        <option value="5">★★★★★</option>
-                                        <option value="4">★★★★☆</option>
-                                        <option value="3">★★★☆☆</option>
-                                        <option value="2">★★☆☆☆</option>
-                                        <option value="1">★☆☆☆☆</option>
-                                    </select>
-                                </div>
 
-                                <div class="col-md-2">
-                                    <button
-                                        type="submit"
-                                        class="btn btn-dark w-100"
-                                    >
-                                        등록
-                                    </button>
-                                </div>
-                            </form>
+                                    <div class="row g-2">
 
-                            <!-- 리뷰 목록 -->
-                            <div class="list-group">
-                                {% for review in reviews %}
-                                    <div class="list-group-item">
+                                        <div class="col-md-7">
 
-                                        <div class="d-flex justify-content-between">
-                                            <strong>
-                                                {{ review.nickname }}
-                                            </strong>
+                                            <input
+                                                type="text"
+                                                name="comment"
+                                                class="form-control"
+                                                placeholder="한줄평을 입력해주세요."
+                                                required
+                                            >
 
-                                            <span class="text-warning">
-                                                ★ {{ review.star }}
-                                            </span>
                                         </div>
 
-                                        <p class="mt-2 mb-2">
-                                            {{ review.comment }}
-                                        </p>
+
+                                        <div class="col-md-3">
+
+                                            <select
+                                                name="star"
+                                                class="form-select"
+                                                required
+                                            >
+
+                                                <option value="">
+                                                    별점
+                                                </option>
+
+                                                <option value="5">
+                                                    ★★★★★
+                                                </option>
+
+                                                <option value="4">
+                                                    ★★★★☆
+                                                </option>
+
+                                                <option value="3">
+                                                    ★★★☆☆
+                                                </option>
+
+                                                <option value="2">
+                                                    ★★☆☆☆
+                                                </option>
+
+                                                <option value="1">
+                                                    ★☆☆☆☆
+                                                </option>
+
+                                            </select>
+
+                                        </div>
+
+
+                                        <div class="col-md-2">
+
+                                            <button
+                                                type="submit"
+                                                class="btn btn-dark w-100"
+                                            >
+                                                등록
+                                            </button>
+
+                                        </div>
+
+                                    </div>
+
+                                </form>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- ========================= -->
+                        <!-- 리뷰 목록 -->
+                        <!-- ========================= -->
+
+                        <div>
+
+                            <h4 class="fw-bold mb-3">
+                                리뷰
+                            </h4>
+
+
+                            {% for review in reviews %}
+
+                                <div class="review-card">
+
+                                    <div class="d-flex justify-content-between align-items-start">
+
+                                        <div>
+
+                                            <strong>
+                                                {{ review.nickname or "알 수 없는 사용자" }}
+                                            </strong>
+
+                                            <div class="text-warning mt-1">
+
+                                                {% for i in range(review.star) %}
+                                                    ★
+                                                {% endfor %}
+
+                                                {% for i in range(5 - review.star) %}
+                                                    ☆
+                                                {% endfor %}
+
+                                                <span class="text-dark ms-1">
+                                                    {{ review.star }}점
+                                                </span>
+
+                                            </div>
+
+                                        </div>
+
+
+                                        <!-- 좋아요 -->
 
                                         <form
                                             method="POST"
                                             action="/reviews/{{ review._id }}/like"
                                         >
+
                                             <button
                                                 type="submit"
                                                 class="btn btn-sm btn-outline-secondary"
                                             >
                                                 👍 {{ review.like or 0 }}
                                             </button>
+
                                         </form>
 
                                     </div>
-                                {% else %}
-                                    <p class="text-secondary">
-                                        아직 등록된 리뷰가 없습니다.
+
+
+                                    <p class="mt-3 mb-0">
+                                        {{ review.comment }}
                                     </p>
-                                {% endfor %}
-                            </div>
+
+                                </div>
+
+                            {% else %}
+
+                                <div class="text-secondary py-4">
+                                    아직 작성된 리뷰가 없습니다.
+                                </div>
+
+                            {% endfor %}
 
                         </div>
+
 
                     {% else %}
 
-                        <div class="card-body d-flex justify-content-center align-items-center">
-                            <h4 class="text-secondary">
-                                선택된 식당이 없습니다.
-                            </h4>
+                        <!-- 식당 선택 전 -->
+
+                        <div
+                            class="
+                                empty-detail
+                                d-flex
+                                justify-content-center
+                                align-items-center
+                            "
+                        >
+
+                            <!--
+                            아무 식당도 선택하지 않았을 때
+                            오른쪽을 완전히 비우고 싶으면
+                            아래 문구를 삭제하면 됨
+                            -->
+
                         </div>
 
                     {% endif %}
+
                 </div>
 
-            </section>
-        </main>
-    </div>
+            </div>
 
-    <!-- 식당 등록 모달 -->
-    <div
-        class="modal fade"
-        id="restaurantModal"
-        tabindex="-1"
-        aria-hidden="true"
-    >
-        <div class="modal-dialog">
-            <div class="modal-content">
+        </section>
 
-                <form method="POST" action="/restaurants">
+    </main>
 
-                    <div class="modal-header">
-                        <h5 class="modal-title">
-                            식당 추가
-                        </h5>
+</div>
 
-                        <button
-                            type="button"
-                            class="btn-close"
-                            data-bs-dismiss="modal"
-                        ></button>
-                    </div>
 
-                    <div class="modal-body">
+<!-- ================================= -->
+<!-- 식당 등록 모달 -->
+<!-- ================================= -->
+
+<div
+    class="modal fade"
+    id="restaurantModal"
+    tabindex="-1"
+    aria-hidden="true"
+>
+
+    <div class="modal-dialog modal-dialog-centered">
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+
+                <h5 class="modal-title fw-bold">
+                    식당 등록
+                </h5>
+
+                <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Close"
+                >
+                </button>
+
+            </div>
+
+
+            <form
+                method="POST"
+                action="/restaurants"
+            >
+
+                <div class="modal-body">
+
+
+                    <!-- 식당 이름 -->
+
+                    <div class="mb-3">
+
+                        <label
+                            for="restaurantName"
+                            class="form-label"
+                        >
+                            식당 이름
+                        </label>
+
                         <input
                             type="text"
+                            id="restaurantName"
                             name="name"
-                            class="form-control mb-3"
-                            placeholder="식당 이름"
+                            class="form-control"
                             required
                         >
+
+                    </div>
+
+
+                    <!-- 카테고리 -->
+
+                    <div class="mb-3">
+
+                        <label
+                            for="restaurantCategory"
+                            class="form-label"
+                        >
+                            분류
+                        </label>
 
                         <select
+                            id="restaurantCategory"
                             name="category"
-                            class="form-select mb-3"
+                            class="form-select"
                             required
                         >
-                            <option value="">분류 선택</option>
-                            <option value="한식">한식</option>
-                            <option value="중식">중식</option>
-                            <option value="일식">일식</option>
-                            <option value="양식">양식</option>
-                            <option value="패스트푸드">패스트푸드</option>
-                            <option value="카페">카페</option>
-                            <option value="기타">기타</option>
+
+                            <option value="">
+                                분류 선택
+                            </option>
+
+                            <option value="한식">
+                                한식
+                            </option>
+
+                            <option value="중식">
+                                중식
+                            </option>
+
+                            <option value="일식">
+                                일식
+                            </option>
+
+                            <option value="양식">
+                                양식
+                            </option>
+
+                            <option value="분식">
+                                분식
+                            </option>
+
+                            <option value="카페">
+                                카페
+                            </option>
+
+                            <option value="기타">
+                                기타
+                            </option>
+
                         </select>
 
+                    </div>
+
+
+                    <!-- 주소 -->
+
+                    <div class="mb-3">
+
+                        <label
+                            for="restaurantAddr"
+                            class="form-label"
+                        >
+                            주소
+                        </label>
+
                         <input
                             type="text"
+                            id="restaurantAddr"
                             name="addr"
-                            class="form-control mb-3"
-                            placeholder="주소"
+                            class="form-control"
                             required
                         >
 
+                    </div>
+
+
+                    <!-- 대표 메뉴 -->
+
+                    <div class="mb-3">
+
+                        <label
+                            for="restaurantMenu"
+                            class="form-label"
+                        >
+                            대표 메뉴
+                        </label>
+
                         <input
                             type="text"
+                            id="restaurantMenu"
                             name="main_menu"
                             class="form-control"
-                            placeholder="대표 메뉴"
                         >
+
                     </div>
 
-                    <div class="modal-footer">
-                        <button
-                            type="button"
-                            class="btn btn-secondary"
-                            data-bs-dismiss="modal"
-                        >
-                            취소
-                        </button>
+                </div>
 
-                        <button
-                            type="submit"
-                            class="btn btn-dark"
-                        >
-                            등록
-                        </button>
-                    </div>
 
-                </form>
-            </div>
+                <div class="modal-footer">
+
+                    <button
+                        type="button"
+                        class="btn btn-outline-secondary"
+                        data-bs-dismiss="modal"
+                    >
+                        취소
+                    </button>
+
+                    <button
+                        type="submit"
+                        class="btn btn-dark"
+                    >
+                        등록
+                    </button>
+
+                </div>
+
+            </form>
+
         </div>
+
     </div>
 
-    <script
-        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js">
-    </script>
+</div>
+
+
+<script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js">
+</script>
+
+
+<script>
+
+    function changeSort() {
+
+        const sortValue =
+            document.getElementById("sortSelect").value;
+
+        const params =
+            new URLSearchParams(window.location.search);
+
+        params.set(
+            "sort",
+            sortValue
+        );
+
+        window.location.href =
+            "/home?" + params.toString();
+    }
+
+</script>
+
+
 </body>
 </html>
