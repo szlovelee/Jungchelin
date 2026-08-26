@@ -37,6 +37,7 @@ def preview_home():
 @jwt_required
 def home_page():
     user_id = get_user_id_from_token()
+    user_object_id = user_service.get_user(user_id)["_id"]
     pinned_resto = user_service.get_user_fav_resto(user_id)
 
     sort_key = request.args.get(
@@ -71,7 +72,7 @@ def home_page():
                         str(review["user"])
                     )
                 )
-                review["like_status"] = user_id in review['liked']
+                review["like_status"] = user_object_id in review['liked']
 
     return render_template(
         "home.html",
