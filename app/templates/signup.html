@@ -27,7 +27,10 @@
     <div class="container py-4">
 
         <div class="d-flex justify-content-end">
-            <a href="/login" class="btn btn-outline-secondary btn-lg">
+            <a
+                href="/login"
+                class="btn btn-outline-secondary btn-lg"
+            >
                 로그인
             </a>
         </div>
@@ -76,8 +79,11 @@
                             class="form-select border-dark"
                             required
                         >
-                            <option value="">선택</option>
+                            <option value="">
+                                선택
+                            </option>
 
+                            <!-- constants.py의 TRACK_TYPE 목록 사용 -->
                             {% for track in track_type %}
                                 <option value="{{ track }}">
                                     {{ track }}
