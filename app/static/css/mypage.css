@@ -1,0 +1,15 @@
+.edit-btn {
+    height: 46px;
+    width: 40%;
+    border: none;
+    border-radius: 8px;
+    background: linear-gradient(to bottom, #33dcaf, #03cc90);
+    color: #fff;
+    font-size: 22px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.edit-btn:hover {
+    background: linear-gradient(to bottom, #33dcd6, #03cccc);
+}
