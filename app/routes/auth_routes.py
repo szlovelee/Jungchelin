@@ -7,10 +7,10 @@ from flask import (
 
 from . import bp
 from app.services import auth_service
+from app.services import user_service
 from app.utils.jwt_utils import create_token
 
 
-# 로그인
 @bp.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "GET":
@@ -49,11 +49,15 @@ def login():
     return response
 
 
-# 회원가입
 @bp.route("/signup", methods=["GET", "POST"])
 def signup():
+    track_types = user_service.get_track_types()
+
     if request.method == "GET":
-        return render_template("signup.html")
+        return render_template(
+            "signup.html",
+            track_types=track_types
+        )
 
     user = {
         "name": request.form.get("name", "").strip(),
@@ -65,19 +69,10 @@ def signup():
         "pw_confirm": request.form.get("pw_confirm", "")
     }
 
-    required_fields = [
-        user["name"],
-        user["track"],
-        user["cohort"],
-        user["number"],
-        user["custom_id"],
-        user["pw"],
-        user["pw_confirm"]
-    ]
-
-    if not all(required_fields):
+    if not all(user.values()):
         return render_template(
             "signup.html",
+            track_types=track_types,
             error="모든 항목을 입력해주세요."
         )
 
@@ -86,13 +81,13 @@ def signup():
     if not result["success"]:
         return render_template(
             "signup.html",
+            track_types=track_types,
             error=result["msg"]
         )
 
     return redirect("/login")
 
 
-# 로그아웃
 @bp.route("/logout", methods=["POST"])
 def logout():
     response = make_response(redirect("/login"))
