@@ -28,7 +28,7 @@ def load_resto_list(sort_key=None):
         restaurants.sort(
             key=lambda restaurant: restaurant.get("name", "")
         )
-
+        
     return restaurants
 
 
@@ -54,3 +54,20 @@ def get_resto_name(resto_id: str):
         return None
 
     return resto["name"]
+
+def get_resto_star(id:str):
+  resto = resto_db.read_resto(id)
+
+  if 'star_sum' not in resto:
+    return 0
+  
+  return round(resto['star_sum'] / resto['review_count'], 1)
+
+
+def add_star_info(id:str, star:int):
+  return resto_db.update_star(id, 1, star)
+
+def update_star_info(id:str, prev:int, new:int):
+  difference = new - prev
+  return resto_db.update_star(id, 0, difference)
+

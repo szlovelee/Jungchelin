@@ -1,4 +1,5 @@
 from bson.objectid import ObjectId
+from pymongo import ReturnDocument
 from .mongodb import db
 
 collection = db.resto
@@ -15,3 +16,8 @@ def read_resto(id : str):
 
 def read_by_addr(addr : str):
   return collection.find_one({'addr' : addr})
+
+def update_star(id:str, rv_count:int, star_amount:int):
+  return collection.find_one_and_update({'_id':ObjectId(id)}, 
+                               {'$inc':{'review_count': rv_count, 'star_sum':star_amount}}, 
+                               return_document=ReturnDocument.AFTER)
