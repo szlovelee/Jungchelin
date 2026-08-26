@@ -1,44 +1,5 @@
 from app.db import user_db
 
-def login(custom_id : str, pw : str):
-  user = user_db.read_by_custom_id(custom_id)
-  if user is None :
-    return {
-      'success' : False,
-      'code' : "ID_NOT_FOUND",
-      'msg' : "존재하지 않는 ID입니다."
-    }
-
-  if user["pw"] != pw :
-    return {
-      'success' : False,
-      'code' : "PW_WRONG",
-      'msg' : "비밀번호를 확인하십시오."
-    }
-
-  return { 'success' : True }
-
-
-def join_service(user):
-  if not check_id_duplication(user["custom_id"]) : 
-    return {
-      'success' : False,
-      'code' : "ID_DUPLICATION",
-      'msg' : "사용 중인 아이디입니다."
-    }
-  
-  if user["pw"] != user["pw_confirm"] :
-    return {
-      'success' : False,
-      'code' : "PW_MISMATCH",
-      'msg' : "비밀번호가 일치하지 않습니다."
-    }
-
-  del user['pw_confirm']
-  
-  user_db.create_user(user)
-  return { 'success' : True }
-
 def check_id_duplication(custom_id : str) :
   return user_db.read_by_custom_id(custom_id) is None
 
@@ -51,17 +12,13 @@ def get_user_name(id : str):
   return user['name']
 
 def update_user_info(id: str, new_info):
-  user =  user_db.read_user(id)
+  id_validity = verify_id(id)
+  if not id_validity['success']:
+    return id_validity
 
-  # 사용자 확인
-  if user is None :
-    return {
-      'success' : False,
-      'code' : "USER_NOT_FOUND",
-      'msg' : "해당 ID의 유저가 존재하지 않습니다."
-    } 
-
+  
   # 입력값이 유효한지 확인
+  user =  user_db.read_user(id)
   new_data = {}
   updates = 0
 
@@ -105,4 +62,16 @@ def update_user_info(id: str, new_info):
   
   return {
     'success' : True
+  }
+
+def verify_id(id :str):
+  if user_db.read_user(id) is None:
+    return {
+      'success' : False,
+      'code' : "USER_NOT_FOUND",
+      'msg' : "해당 ID의 사용자가 존재하지 않습니다."
+    }
+
+  return {
+    'success' : True 
   }

@@ -41,3 +41,6 @@ def user_liked(id : str, user_id : str):
   if 'liked' not in review:
     return False
   return ObjectId(user_id) in review['liked']
+
+def get_avg_star(resto_id : str):
+  return review_db.aggregate_avg_star(resto_id)

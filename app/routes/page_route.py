@@ -1,6 +1,7 @@
 from flask import render_template, redirect
 
 from . import bp
+from app.services import resto_service
 from app.utils import jwt_required
 from app.utils.jwt_utils import get_user_id_from_token
 
@@ -27,6 +28,7 @@ def preview_home():
 @jwt_required
 def home_page():
     user_id = get_user_id_from_token()
+    restaurants = resto_service.load_resto_list();
 
     return render_template(
         "home.html",
