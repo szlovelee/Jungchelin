@@ -145,3 +145,9 @@ def delete_review(review_id):
         )
 
     return redirect("/mypage")
+
+
+@bp.route('/review/exists', methods=["GET"])
+def user_already_reviewed():
+  user_id = get_user_id_from_token()
+  return review_service.user_reviewed(user_id)
