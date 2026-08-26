@@ -192,12 +192,13 @@
 
                                 <form method="POST" btn-sm action="/reviews/{{ review._id }}/like">
                                     <button type="submit" class="btn p-0 d-inline-flex align-items-center gap-1">
-                                        {% if review.like %}
-                                        <img src="{{ url_for('static', filename='img/thumb.png') }}" alt="좋아요"
-                                            width="30">                                           
-                                        {% else %}
+                                        {% if status %}
                                         <img src="{{ url_for('static', filename='img/no-thumb.png') }}" alt="좋아요 취소"
-                                            width="30">                                                                                       
+                                            width="30">                            
+                                          
+                                        {% else %}
+                                        <img src="{{ url_for('static', filename='img/thumb.png') }}" alt="좋아요"
+                                            width="30">                                                            
                                         {% endif %}
                                         <span class="p-0">{{ review.like or 0 }}</span>                                                                              
                                     </button>
