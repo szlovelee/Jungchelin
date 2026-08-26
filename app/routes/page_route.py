@@ -37,6 +37,7 @@ def preview_home():
 @jwt_required
 def home_page():
     user_id = get_user_id_from_token()
+    pinned_resto = user_service.get_user_fav_resto(user_id)
 
     sort_key = request.args.get(
         "sort",
@@ -76,6 +77,7 @@ def home_page():
     return render_template(
         "home.html",
         user_id=user_id,
+        pinned=pinned_resto,
         restaurants=restaurants,
         selected_restaurant=selected_restaurant,
         reviews=reviews,

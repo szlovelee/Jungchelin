@@ -26,7 +26,11 @@ def get_user_fav_resto(id):
     if user is None:
         return None
 
+    if "fav_resto" not in user :
+      return []
+
     return user["fav_resto"]
+    
 
 def update_user_info(id, new_info):
     user = user_db.read_user(id)

@@ -65,10 +65,14 @@ def get_user_fav_resto():
     return user_service.get_user_fav_resto(user_id)
 
 
-@bp.route('/restaurants/pin+toggle', methods=["POST"])
+@bp.route('/restaurants/<resto_id>/pin', methods=["POST"])
 @jwt_required
-def toggle_resto_pin():
+def toggle_resto_pin(resto_id):
+    print("toggle pin called")
     user_id = get_user_id_from_token()
-    restaurant_id = request.form.get('resto')
 
-    return user_service.toggle_fav_resto(user_id, restaurant_id)
+    user_service.toggle_fav_resto(user_id, resto_id)
+
+    return redirect(
+        request.referrer or '/home'
+        )
