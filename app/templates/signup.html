@@ -33,11 +33,9 @@
             <div class="flex-grow-1 input-group">
                 <span class="input-group-text border-0 bg-transparent fs-5">소속</span>
                 <select class="form-select border-dark border-1 rounded" name="dept">
-                    <option value=""></option>
-                    <option>코치</option>
-                    <option>SW-AI랩</option>
-                    <option>게임랩</option>
-                    <option>게임테크랩</option>
+                    {% for d in depts %}
+                    <option {% if d==user.track %}selected{% endif %}>{{ d }}</option>
+                    {% endfor %}
                 </select>
             </div>
             <div class="flex-grow-1 input-group">
