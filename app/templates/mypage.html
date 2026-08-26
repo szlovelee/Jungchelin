@@ -23,12 +23,12 @@
 
             <div class="d-flex gap-2">
 
-                <a href="/home" class="btn btn-outline-secondary">
+                <a href="/home" class="btn" style="background-color: #03CC90; border-color: #03CC90; color: white;">
                     홈으로
                 </a>
 
                 <form method="POST" action="/logout" class="m-0">
-                    <button type="submit" class="btn btn-outline-secondary">
+                    <button type="submit" class="btn" style="background-color:  #E9E9E9; border-color:  #E9E9E9; color: black;">
                         로그아웃
                     </button>
                 </form>
@@ -174,10 +174,104 @@
 
                             <div class="list-group-item">
 
-                                <div class="d-flex justify-content-between">
-                                    <strong>
-                                        {{ review.resto.name }}
-                                    </strong>
+                                    <div class="d-flex justify-content-between">
+                                        <strong>
+                                            {{ review.resto.name }}
+                                        </strong>
+
+                                        <span class="text-warning">
+                                            ★ {{ review.star }}
+                                        </span>
+                                    </div>
+
+                                    <p class="mt-2 mb-2">
+                                        {{ review.comment }}
+                                    </p>
+
+                                    <div class="d-flex justify-content-between align-items-center">
+
+                                        <span class="text-secondary">
+                                            <img src="{{ url_for('static', filename='img/thumb.png') }}" alt="좋아요"
+                                                width="30"> {{ review.like }}
+                                        </span>
+
+                                        <div class="d-flex gap-2">
+
+                                            <button
+                                                type="button"
+                                                class="btn btn-outline-secondary"
+                                                data-bs-toggle="collapse"
+                                                data-bs-target="#editReview{{ review._id }}"
+                                            >
+                                                수정
+                                            </button>
+
+                                            <form
+                                                method="POST"
+                                                action="/reviews/{{ review._id }}/delete"
+                                                class="m-0"
+                                            >
+                                                <button
+                                                    type="submit"
+                                                    class="btn btn-outline-danger"
+                                                >
+                                                    삭제
+                                                </button>
+                                            </form>
+
+                                        </div>
+                                    </div>
+
+                                    <div
+                                        id="editReview{{ review._id }}"
+                                        class="collapse mt-3"
+                                    >
+                                        <form
+                                            method="POST"
+                                            action="/reviews/{{ review._id }}/edit"
+                                            class="row g-2"
+                                        >
+
+                                            <div class="col-md-7">
+                                                <input
+                                                    type="text"
+                                                    name="comment"
+                                                    class="form-control"
+                                                    value="{{ review.comment }}"
+                                                    required
+                                                >
+                                            </div>
+
+                                            <div class="col-md-3">
+                                                <select
+                                                    name="star"
+                                                    class="form-select"
+                                                    required
+                                                >
+                                                    {% for score in range(1, 6) %}
+                                                        <option
+                                                            value="{{ score }}"
+                                                            {% if score == review.star %}
+                                                                selected
+                                                            {% endif %}
+                                                        >
+                                                            {{ score }}점
+                                                        </option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+
+                                            <div class="col-md-2">
+                                                <button
+                                                    type="submit"
+                                                    class="btn btn-dark w-100"
+                                                >
+                                                    저장
+                                                </button>
+                                            </div>
+
+                                        </form>
+                                    </div>
 
                                     <span class="text-warning">
                                         ★ {{ review.star }}
