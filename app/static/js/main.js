@@ -1,3 +1,5 @@
+import { toggle_resto_pin } from "./home";
+
 document.addEventListener("DOMContentLoaded", function () {
     const restaurantForm = document.querySelector(
         '#restaurantModal form[action="/restaurants"]'
@@ -13,25 +15,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
     // 고정핀 클릭
-    (async ()=>{
-        pinButtons.forEach(function (pinButton) {
+    pinButtons.forEach(function (pinButton) {
             pinButton.addEventListener("click", function (event) {
                 event.preventDefault();
                 event.stopPropagation();
-                
-                const response = await fetch(`/restaurants/${restaurantId}/pin`, {
-                    method: "POST"
-                });
-
-                const isPinned = await response.json()
-
-                pinButton.setAttribute(
-                    "aria-pressed",
-                    String(isPinned)
-                );
+                toggle_resto_pin(restaurantId, pinButton);
             });
         });
-    })();
 
 
     // 식당 등록
