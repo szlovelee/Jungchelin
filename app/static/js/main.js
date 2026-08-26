@@ -13,23 +13,25 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
     // 고정핀 클릭
-    pinButtons.forEach(function (pinButton) {
-        pinButton.addEventListener("click", function (event) {
-            event.preventDefault();
-            event.stopPropagation();
-            
-            const response = await fetch(`/restaurants/${restaurantId}/pin`, {
-                method: "POST"
+    (async ()=>{
+        pinButtons.forEach(function (pinButton) {
+            pinButton.addEventListener("click", function (event) {
+                event.preventDefault();
+                event.stopPropagation();
+                
+                const response = await fetch(`/restaurants/${restaurantId}/pin`, {
+                    method: "POST"
+                });
+
+                const isPinned = await response.json()
+
+                pinButton.setAttribute(
+                    "aria-pressed",
+                    String(isPinned)
+                );
             });
-
-            const isPinned = await response.json()
-
-            pinButton.setAttribute(
-                "aria-pressed",
-                String(isPinned)
-            );
         });
-    });
+    })();
 
 
     // 식당 등록
