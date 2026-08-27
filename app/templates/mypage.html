@@ -3,32 +3,75 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1"
+    >
 
     <title>마이페이지 | 정슐랭</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/mypage.css') }}">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/mypage.css') }}"
+    >
 </head>
 
 <body>
+
     <div class="container-fluid py-4 px-4">
 
-        <header class="d-flex justify-content-between align-items-center mb-5">
+        <!-- 헤더 -->
+        <header
+            class="d-flex justify-content-between align-items-center mb-5"
+        >
 
-            <a href="/home" class="text-decoration-none text-dark">
+            <a
+                href="/home"
+                class="text-decoration-none text-dark"
+            >
                 <div class="d-flex">
-                    <img src="{{ url_for('static', filename='img/title.png') }}" width="200">
+                    <img
+                        src="{{ url_for('static', filename='img/title.png') }}"
+                        alt="정슐랭"
+                        width="200"
+                    >
                 </div>
             </a>
 
             <div class="d-flex gap-2">
 
-                <a href="/home" class="btn" style="background-color: #03CC90; border-color: #03CC90; color: white;">
+                <a
+                    href="/home"
+                    class="btn"
+                    style="
+                        background-color: #03CC90;
+                        border-color: #03CC90;
+                        color: white;
+                    "
+                >
                     홈으로
                 </a>
 
-                <form method="POST" action="/logout" class="m-0">
-                    <button type="submit" class="btn" style="background-color:  #E9E9E9; border-color:  #E9E9E9; color: black;">
+                <form
+                    method="POST"
+                    action="/logout"
+                    class="m-0"
+                >
+                    <button
+                        type="submit"
+                        class="btn"
+                        style="
+                            background-color: #E9E9E9;
+                            border-color: #E9E9E9;
+                            color: black;
+                        "
+                    >
                         로그아웃
                     </button>
                 </form>
@@ -36,10 +79,15 @@
             </div>
         </header>
 
+
+        <!-- 오류 메시지 -->
         {% set error_code = request.args.get("error") %}
 
         {% if error_code %}
-        <div class="alert alert-danger">
+        <div
+            class="alert alert-danger"
+            role="alert"
+        >
 
             {% if error_code == "PW_MISMATCH" %}
             비밀번호가 일치하지 않습니다.
@@ -69,99 +117,200 @@
         </div>
         {% endif %}
 
+
         <main class="row g-4">
 
             <!-- 사용자 정보 -->
             <section class="col-lg-5">
 
                 <div class="card shadow-sm">
+
                     <div class="card-body">
 
                         <h2 class="card-title mb-4">
                             내 정보
                         </h2>
 
-                        <form method="POST" action="/mypage">
+                        <form
+                            method="POST"
+                            action="/mypage"
+                        >
 
+                            <!-- 닉네임 -->
                             <div class="mb-3">
-                                <label for="name" class="form-label">
+
+                                <label
+                                    for="name"
+                                    class="form-label"
+                                >
                                     닉네임
                                 </label>
 
-                                <input type="text" id="name" name="name" class="form-control" value="{{ user.name }}"
-                                    required>
+                                <input
+                                    type="text"
+                                    id="name"
+                                    name="name"
+                                    class="form-control"
+                                    value="{{ user.name }}"
+                                    required
+                                >
+
                             </div>
 
+
+                            <!-- 소속 -->
                             <div class="mb-3">
-                                <label for="track" class="form-label">
+
+                                <label
+                                    for="track"
+                                    class="form-label"
+                                >
                                     소속
                                 </label>
 
-                                <select id="track" name="track" class="form-select" required>
+                                <select
+                                    id="track"
+                                    name="track"
+                                    class="form-select"
+                                    required
+                                >
+
                                     {% for track in track_type %}
-                                    <option value="{{ track }}" {% if track==user.track %} selected {% endif %}>
+
+                                    <option
+                                        value="{{ track }}"
+                                        {% if track == user.track %}
+                                        selected
+                                        {% endif %}
+                                    >
                                         {{ track }}
                                     </option>
+
                                     {% endfor %}
+
                                 </select>
+
                             </div>
 
+
+                            <!-- 기수와 번호 -->
                             <div class="row g-2 mb-3">
 
                                 <div class="col">
-                                    <label for="cohort" class="form-label">
+
+                                    <label
+                                        for="cohort"
+                                        class="form-label"
+                                    >
                                         기수
                                     </label>
 
-                                    <input type="number" id="cohort" name="cohort" class="form-control"
-                                        value="{{ user.cohort }}" min="1" required>
+                                    <input
+                                        type="number"
+                                        id="cohort"
+                                        name="cohort"
+                                        class="form-control"
+                                        value="{{ user.cohort }}"
+                                        min="1"
+                                        required
+                                    >
+
                                 </div>
 
                                 <div class="col">
-                                    <label for="number" class="form-label">
+
+                                    <label
+                                        for="number"
+                                        class="form-label"
+                                    >
                                         번호
                                     </label>
 
-                                    <input type="number" id="number" name="number" class="form-control"
-                                        value="{{ user.number }}" min="1" required>
+                                    <input
+                                        type="number"
+                                        id="number"
+                                        name="number"
+                                        class="form-control"
+                                        value="{{ user.number }}"
+                                        min="1"
+                                        required
+                                    >
+
                                 </div>
 
                             </div>
 
                             <hr>
 
+
+                            <!-- 새 비밀번호 -->
                             <div class="mb-3">
-                                <label for="pw" class="form-label">
+
+                                <label
+                                    for="pw"
+                                    class="form-label"
+                                >
                                     새 비밀번호
                                 </label>
 
-                                <input type="password" id="pw" name="pw" class="form-control" minlength="9"
-                                    placeholder="변경할 때만 입력">
+                                <input
+                                    type="password"
+                                    id="pw"
+                                    name="pw"
+                                    class="form-control"
+                                    minlength="9"
+                                    placeholder="변경할 때만 입력"
+                                >
+
                             </div>
 
+
+                            <!-- 새 비밀번호 확인 -->
                             <div class="mb-4">
-                                <label for="pw_confirm" class="form-label">
+
+                                <label
+                                    for="pw_confirm"
+                                    class="form-label"
+                                >
                                     새 비밀번호 확인
                                 </label>
 
-                                <input type="password" id="pw_confirm" name="pw_confirm" class="form-control"
-                                    minlength="9" placeholder="변경할 때만 입력">
+                                <input
+                                    type="password"
+                                    id="pw_confirm"
+                                    name="pw_confirm"
+                                    class="form-control"
+                                    minlength="9"
+                                    placeholder="변경할 때만 입력"
+                                >
+
                             </div>
+
+
                             <div class="d-flex justify-content-center">
-                                <button type="submit" class="edit-btn edit-btn-hover">
+
+                                <button
+                                    type="submit"
+                                    class="edit-btn edit-btn-hover"
+                                >
                                     정보 수정
                                 </button>
+
                             </div>
+
                         </form>
+
                     </div>
                 </div>
 
             </section>
 
+
             <!-- 작성한 리뷰 -->
             <section class="col-lg-7">
 
                 <div class="card shadow-sm">
+
                     <div class="card-body">
 
                         <h2 class="card-title mb-4">
@@ -174,130 +323,71 @@
 
                             <div class="list-group-item">
 
-                                    <div class="d-flex justify-content-between">
-                                        <strong>
-                                            {{ review.resto.name }}
-                                        </strong>
+                                <!-- 식당 이름과 별점 -->
+                                <div
+                                    class="d-flex justify-content-between align-items-center"
+                                >
 
-                                        <span class="text-warning">
-                                            ★ {{ review.star }}
-                                        </span>
-                                    </div>
-
-                                    <p class="mt-2 mb-2">
-                                        {{ review.comment }}
-                                    </p>
-
-                                    <div class="d-flex justify-content-between align-items-center">
-
-                                        <span class="text-secondary">
-                                            <img src="{{ url_for('static', filename='img/thumb.png') }}" alt="좋아요"
-                                                width="30"> {{ review.like }}
-                                        </span>
-
-                                        <div class="d-flex gap-2">
-
-                                            <button
-                                                type="button"
-                                                class="btn btn-outline-secondary"
-                                                data-bs-toggle="collapse"
-                                                data-bs-target="#editReview{{ review._id }}"
-                                            >
-                                                수정
-                                            </button>
-
-                                            <form
-                                                method="POST"
-                                                action="/reviews/{{ review._id }}/delete"
-                                                class="m-0"
-                                            >
-                                                <button
-                                                    type="submit"
-                                                    class="btn btn-outline-danger"
-                                                >
-                                                    삭제
-                                                </button>
-                                            </form>
-
-                                        </div>
-                                    </div>
-
-                                    <div
-                                        id="editReview{{ review._id }}"
-                                        class="collapse mt-3"
-                                    >
-                                        <form
-                                            method="POST"
-                                            action="/reviews/{{ review._id }}/edit"
-                                            class="row g-2"
-                                        >
-
-                                            <div class="col-md-7">
-                                                <input
-                                                    type="text"
-                                                    name="comment"
-                                                    class="form-control"
-                                                    value="{{ review.comment }}"
-                                                    required
-                                                >
-                                            </div>
-
-                                            <div class="col-md-3">
-                                                <select
-                                                    name="star"
-                                                    class="form-select"
-                                                    required
-                                                >
-                                                    {% for score in range(1, 6) %}
-                                                        <option
-                                                            value="{{ score }}"
-                                                            {% if score == review.star %}
-                                                                selected
-                                                            {% endif %}
-                                                        >
-                                                            {{ score }}점
-                                                        </option>
-                                                    {% endfor %}
-                                                </select>
-                                            </div>
-
-                                            <div class="col-md-2">
-                                                <button
-                                                    type="submit"
-                                                    class="btn btn-dark w-100"
-                                                >
-                                                    저장
-                                                </button>
-                                            </div>
-
-                                        </form>
-                                    </div>
+                                    <strong>
+                                        {{ review.resto.name }}
+                                    </strong>
 
                                     <span class="text-warning">
                                         ★ {{ review.star }}
                                     </span>
+
                                 </div>
 
+
+                                <!-- 한줄평 -->
                                 <p class="mt-2 mb-2">
                                     {{ review.comment }}
                                 </p>
 
-                                <div class="d-flex justify-content-between align-items-center">
+
+                                <!-- 좋아요와 관리 버튼 -->
+                                <div
+                                    class="d-flex justify-content-between align-items-center"
+                                >
 
                                     <span class="text-secondary">
-                                        <img src="{{ url_for('static', filename='img/thumb.png') }}" alt="좋아요"
-                                            width="30"> {{ review.like }}
+
+                                        <img
+                                            src="{{ url_for('static', filename='img/thumb.png') }}"
+                                            alt="좋아요"
+                                            width="30"
+                                        >
+
+                                        {{ review.like or 0 }}
+
                                     </span>
+
 
                                     <div class="d-flex gap-2">
 
-                                        <button type="button" class="btn btn-sm btn-outline-secondary"
-                                            data-bs-toggle="collapse" data-bs-target="#editReview{{ review._id }}">
+                                        <!-- 수정 버튼 -->
+                                        <button
+                                            type="button"
+                                            class="btn btn-sm btn-outline-secondary"
+                                            data-bs-toggle="collapse"
+                                            data-bs-target="#editReview{{ review._id }}"
+                                            aria-controls="editReview{{ review._id }}"
+                                            aria-expanded="false"
+                                        >
                                             수정
                                         </button>
 
-                                        <form method="POST" action="/reviews/{{ review._id }}/delete" class="m-0">
-                                            <button type="submit" class="btn btn-sm btn-outline-danger">
+
+                                        <!-- 삭제 버튼 -->
+                                        <form
+                                            method="POST"
+                                            action="/reviews/{{ review._id }}/delete"
+                                            class="m-0"
+                                        >
+                                            <button
+                                                type="submit"
+                                                class="btn btn-sm btn-outline-danger"
+                                            >
                                                 삭제
                                             </button>
                                         </form>
@@ -305,32 +395,74 @@
                                     </div>
                                 </div>
 
-                                <div id="editReview{{ review._id }}" class="collapse mt-3">
-                                    <form method="POST" action="/reviews/{{ review._id }}/edit" class="row g-2">
 
+                                <!-- 리뷰 수정 영역 -->
+                                <div
+                                    id="editReview{{ review._id }}"
+                                    class="collapse mt-3"
+                                >
+
+                                    <form
+                                        method="POST"
+                                        action="/reviews/{{ review._id }}/edit"
+                                        class="row g-2"
+                                    >
+
+                                        <!-- 한줄평 수정 -->
                                         <div class="col-md-7">
-                                            <input type="text" name="comment" class="form-control"
-                                                value="{{ review.comment }}" required>
+
+                                            <input
+                                                type="text"
+                                                name="comment"
+                                                class="form-control"
+                                                value="{{ review.comment }}"
+                                                required
+                                            >
+
                                         </div>
 
+
+                                        <!-- 별점 수정 -->
                                         <div class="col-md-3">
-                                            <select name="star" class="form-select" required>
+
+                                            <select
+                                                name="star"
+                                                class="form-select"
+                                                required
+                                            >
+
                                                 {% for score in range(1, 6) %}
-                                                <option value="{{ score }}" {% if score==review.star %} selected {%
-                                                    endif %}>
+
+                                                <option
+                                                    value="{{ score }}"
+                                                    {% if score == review.star %}
+                                                    selected
+                                                    {% endif %}
+                                                >
                                                     {{ score }}점
                                                 </option>
+
                                                 {% endfor %}
+
                                             </select>
+
                                         </div>
 
+
+                                        <!-- 저장 버튼 -->
                                         <div class="col-md-2">
-                                            <button type="submit" class="btn btn-dark w-100">
+
+                                            <button
+                                                type="submit"
+                                                class="btn btn-dark w-100"
+                                            >
                                                 저장
                                             </button>
+
                                         </div>
 
                                     </form>
+
                                 </div>
 
                             </div>
@@ -344,16 +476,22 @@
                             {% endfor %}
 
                         </div>
+
                     </div>
                 </div>
 
             </section>
 
         </main>
+
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js">
+
+    <script
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+    >
     </script>
+
 </body>
 
 </html>
