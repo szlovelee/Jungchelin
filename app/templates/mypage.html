@@ -318,157 +318,160 @@
                         </h2>
 
                         <div class="list-group">
+                            <div id="reviewEditAccordion">
 
-                            {% for review in reviews %}
+                              {% for review in reviews %}
 
-                            <div class="list-group-item">
+                              <div class="list-group-item">
 
-                                <!-- 식당 이름과 별점 -->
-                                <div
-                                    class="d-flex justify-content-between align-items-center"
-                                >
+                                  <!-- 식당 이름과 별점 -->
+                                  <div
+                                      class="d-flex justify-content-between align-items-center"
+                                  >
 
-                                    <strong>
-                                        {{ review.resto.name }}
-                                    </strong>
+                                      <strong>
+                                          {{ review.resto.name }}
+                                      </strong>
 
-                                    <span class="text-warning">
-                                        ★ {{ review.star }}
-                                    </span>
+                                      <span class="text-warning">
+                                          ★ {{ review.star }}
+                                      </span>
 
-                                </div>
-
-
-                                <!-- 한줄평 -->
-                                <p class="mt-2 mb-2">
-                                    {{ review.comment }}
-                                </p>
+                                  </div>
 
 
-                                <!-- 좋아요와 관리 버튼 -->
-                                <div
-                                    class="d-flex justify-content-between align-items-center"
-                                >
-
-                                    <span class="text-secondary">
-
-                                        <img
-                                            src="{{ url_for('static', filename='img/thumb.png') }}"
-                                            alt="좋아요"
-                                            width="30"
-                                        >
-
-                                        {{ review.like or 0 }}
-
-                                    </span>
+                                  <!-- 한줄평 -->
+                                  <p class="mt-2 mb-2">
+                                      {{ review.comment }}
+                                  </p>
 
 
-                                    <div class="d-flex gap-2">
+                                  <!-- 좋아요와 관리 버튼 -->
+                                  <div
+                                      class="d-flex justify-content-between align-items-center"
+                                  >
 
-                                        <!-- 수정 버튼 -->
-                                        <button
-                                            type="button"
-                                            class="btn btn-sm btn-outline-secondary"
-                                            data-bs-toggle="collapse"
-                                            data-bs-target="#editReview{{ review._id }}"
-                                            aria-controls="editReview{{ review._id }}"
-                                            aria-expanded="false"
-                                        >
-                                            수정
-                                        </button>
+                                      <span class="text-secondary">
 
+                                          <img
+                                              src="{{ url_for('static', filename='img/thumb.png') }}"
+                                              alt="좋아요"
+                                              width="30"
+                                          >
 
-                                        <!-- 삭제 버튼 -->
-                                        <form
-                                            method="POST"
-                                            action="/reviews/{{ review._id }}/delete"
-                                            class="m-0"
-                                        >
-                                            <button
-                                                type="submit"
-                                                class="btn btn-sm btn-outline-danger"
-                                            >
-                                                삭제
-                                            </button>
-                                        </form>
+                                          {{ review.like or 0 }}
 
-                                    </div>
-                                </div>
+                                      </span>
 
 
-                                <!-- 리뷰 수정 영역 -->
-                                <div
-                                    id="editReview{{ review._id }}"
-                                    class="collapse mt-3"
-                                >
+                                      <div class="d-flex gap-2">
 
-                                    <form
-                                        method="POST"
-                                        action="/reviews/{{ review._id }}/edit"
-                                        class="row g-2"
-                                    >
-
-                                        <!-- 한줄평 수정 -->
-                                        <div class="col-md-7">
-
-                                            <input
-                                                type="text"
-                                                name="comment"
-                                                class="form-control"
-                                                value="{{ review.comment }}"
-                                                required
-                                            >
-
-                                        </div>
+                                          <!-- 수정 버튼 -->
+                                          <button
+                                              type="button"
+                                              class="btn btn-sm btn-outline-secondary"
+                                              data-bs-toggle="collapse"
+                                              data-bs-target="#editReview{{ review._id }}"
+                                              aria-controls="editReview{{ review._id }}"
+                                              aria-expanded="false"
+                                          >
+                                              수정
+                                          </button>
 
 
-                                        <!-- 별점 수정 -->
-                                        <div class="col-md-3">
+                                          <!-- 삭제 버튼 -->
+                                          <form
+                                              method="POST"
+                                              action="/reviews/{{ review._id }}/delete"
+                                              class="m-0"
+                                          >
+                                              <button
+                                                  type="submit"
+                                                  class="btn btn-sm btn-outline-danger"
+                                              >
+                                                  삭제
+                                              </button>
+                                          </form>
 
-                                            <select
-                                                name="star"
-                                                class="form-select"
-                                                required
-                                            >
-
-                                                {% for score in range(1, 6) %}
-
-                                                <option
-                                                    value="{{ score }}"
-                                                    {% if score == review.star %}
-                                                    selected
-                                                    {% endif %}
-                                                >
-                                                    {{ score }}점
-                                                </option>
-
-                                                {% endfor %}
-
-                                            </select>
-
-                                        </div>
+                                      </div>
+                                  </div>
 
 
-                                        <!-- 저장 버튼 -->
-                                        <div class="col-md-2">
+                                  <!-- 리뷰 수정 영역 -->
+                                  <div
+                                      id="editReview{{ review._id }}"
+                                      class="collapse mt-3"
+                                      data-bs-parent="#reviewEditAccordion"
+                                  >
 
-                                            <button
-                                                type="submit"
-                                                class="btn btn-dark w-100"
-                                            >
-                                                저장
-                                            </button>
+                                      <form
+                                          method="POST"
+                                          action="/reviews/{{ review._id }}/edit"
+                                          class="row g-2"
+                                      >
 
-                                        </div>
+                                          <!-- 한줄평 수정 -->
+                                          <div class="col-md-7">
 
-                                    </form>
+                                              <input
+                                                  type="text"
+                                                  name="comment"
+                                                  class="form-control"
+                                                  value="{{ review.comment }}"
+                                                  required
+                                              >
 
-                                </div>
+                                          </div>
+
+
+                                          <!-- 별점 수정 -->
+                                          <div class="col-md-3">
+
+                                              <select
+                                                  name="star"
+                                                  class="form-select"
+                                                  required
+                                              >
+
+                                                  {% for score in range(1, 6) %}
+
+                                                  <option
+                                                      value="{{ score }}"
+                                                      {% if score == review.star %}
+                                                      selected
+                                                      {% endif %}
+                                                  >
+                                                      {{ score }}점
+                                                  </option>
+
+                                                  {% endfor %}
+
+                                              </select>
+
+                                          </div>
+
+
+                                          <!-- 저장 버튼 -->
+                                          <div class="col-md-2">
+
+                                              <button
+                                                  type="submit"
+                                                  class="btn btn-dark w-100"
+                                              >
+                                                  저장
+                                              </button>
+
+                                          </div>
+
+                                      </form>
+
+                                  </div>
+
+                              </div>
+
+                              {% else %}
 
                             </div>
-
-                            {% else %}
-
                             <div class="text-secondary">
                                 작성한 리뷰가 없습니다.
                             </div>
