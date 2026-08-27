@@ -13,3 +13,8 @@
 .signup-btn:hover {
     background: linear-gradient(to bottom, #33dcd6, #03cccc);
 }
+
+.signup-label {
+    width: 120px;
+    justify-content: center;
+}

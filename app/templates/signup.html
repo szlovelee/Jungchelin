@@ -26,7 +26,7 @@
     <div class="container py-4">
 
         <div class="d-flex justify-content-end">
-            <a href="/login" class="btn btn-lg" style="background-color: #03CC90; border-color: #03CC90; color: white;">
+            <a href="/login" class="btn btn-lg mt-4 me-3" style="background-color: #03CC90; border-color: #03CC90; color: white;">
                 로그인
             </a>
         </div>
@@ -48,7 +48,7 @@
                     닉네임
                 </span>
 
-                <input type="text" name="name" class="form-control border-dark" pattern="[가-힣]+" placeholder="닉네임"
+                <input type="input-group-text signup-label" name="name" class="form-control border-dark" pattern="[가-힣]+" placeholder="닉네임"
                     value="{{ form_data.name if form_data else '' }}" required>
             </div>
 
@@ -98,7 +98,7 @@
                         아이디
                     </span>
 
-                    <input type="text" name="custom_id" class="form-control border-dark" pattern="[A-Za-z0-9]+"
+                    <input type="text" name="custom_id" class="signup-label form-control border-dark" pattern="[A-Za-z0-9]+"
                         minlength="6" placeholder="영문과 숫자 6자 이상" value="{{ form_data.custom_id if form_data else '' }}"
                         required>
                 </div>
@@ -118,7 +118,7 @@
                     비밀번호
                 </span>
 
-                <input type="password" name="pw" class="form-control border-dark" pattern="[A-Za-z0-9!@#$%^&*]+"
+                <input type="password" name="pw" class="form-control border-dark signup-label" pattern="[A-Za-z0-9!@#$%^&*]+"
                     minlength="9" placeholder="비밀번호 9자 이상" required>
             </div>
 
